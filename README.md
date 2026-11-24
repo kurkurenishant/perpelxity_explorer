@@ -61,8 +61,8 @@ npx serve .
 ### 5. 🌡️ Token Probability Heatmap
 - Visual intensity mapping across the sentence.
 - View toggles:
-  - **Probability View**: Cyan/emerald glow for high-confidence tokens.
-  - **Surprise View**: Violet/pink glow highlighting unexpected tokens.
+  - **Probability View**: Glowing orange and white intensity for high-confidence tokens.
+  - **Surprise View**: Fiery orange-red glow highlighting unexpected tokens.
 - Hover popovers with exact metrics.
 
 ### 6. 🔮 Next-Token Predictions
@@ -102,17 +102,17 @@ $$\ln P(t_i) = (z_{t_i} - \max_j z_j) - \ln\left(\sum_j \exp(z_j - \max_j z_j)\r
 
 ## 🎨 Design System
 
-- **Color Palette**:
-  - Main Background: `#080B16`
-  - Secondary Background: `#0D1224`
-  - Elevated Cards: `#151D35`
-  - Primary Cyan: `#22D3EE`
-  - Violet: `#8B5CF6`
-  - Pink Accent: `#F472B6`
+- **Color Palette & Glassmorphism**:
+  - Main Background: Deep Warm Obsidian (`#0B0A0E`) with floating organic ambient light orbs
+  - Primary Orange: `#FF6B00` (Electric Sunset Orange)
+  - Light Orange / Amber: `#FF9E44` & `#FFA500`
+  - Pristine White: `#FFFFFF`
+  - Frosted Glass Cards: `rgba(22, 18, 26, 0.58)` with `backdrop-filter: blur(24px)`
+  - Specular Glass Highlights: `border: 1px solid rgba(255, 255, 255, 0.14)` and `border-top: 1px solid rgba(255, 255, 255, 0.3)`
   - Success Green: `#A3E635`
-  - Error Rose: `#FB7185`
+  - Error Rose: `#FF4D4D`
 - **Typography**: Inter & Fira Code
-- **Themes**: Midnight Indigo (Default), Cosmic Violet, High Contrast
+- **Themes**: Orange Obsidian Glass (Default), Frost White Glass (Light Mode), Amber Sunset Glass
 
 ---
 
