@@ -1,0 +1,3882 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Perplexity Explorer — Premium AI Language Model Playground</title>
+  
+  <!-- Modern Inter typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* ==========================================================================
+       DESIGN SYSTEM & THEME VARIABLES
+       Theme: Midnight Indigo + Electric Cyan + Violet
+       ========================================================================== */
+    :root {
+      --bg-main: #080B16;
+      --bg-secondary: #0D1224;
+      --bg-card: rgba(19, 27, 48, 0.78);
+      --bg-card-elevated: #151D35;
+      --bg-card-hover: rgba(26, 37, 66, 0.85);
+      
+      --cyan: #22D3EE;
+      --cyan-light: #67E8F9;
+      --cyan-glow: rgba(34, 211, 238, 0.28);
+      
+      --violet: #8B5CF6;
+      --violet-light: #A78BFA;
+      --violet-glow: rgba(139, 92, 246, 0.28);
+      
+      --pink: #F472B6;
+      --pink-glow: rgba(244, 114, 182, 0.25);
+      
+      --success: #A3E635;
+      --success-glow: rgba(163, 230, 53, 0.22);
+      
+      --error: #FB7185;
+      --error-glow: rgba(251, 113, 133, 0.22);
+      
+      --warning: #FBBF24;
+      
+      --text-main: #F1F5F9;
+      --text-secondary: #94A3B8;
+      --text-muted: #64748B;
+      
+      --border: rgba(148, 163, 184, 0.16);
+      --border-hover: rgba(34, 211, 238, 0.35);
+      --border-active: rgba(139, 92, 246, 0.5);
+      
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 22px;
+      
+      --font-sans: 'Inter', ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      
+      --transition-smooth: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* Cosmic Theme Alternate */
+    [data-theme="cosmic"] {
+      --bg-main: #060814;
+      --bg-secondary: #0A0D1E;
+      --bg-card: rgba(16, 20, 42, 0.82);
+      --bg-card-elevated: #121832;
+      --cyan: #38BDF8;
+      --violet: #A855F7;
+      --pink: #EC4899;
+    }
+
+    /* High Contrast Theme */
+    [data-theme="contrast"] {
+      --bg-main: #03060F;
+      --bg-secondary: #080D1C;
+      --bg-card: rgba(15, 23, 42, 0.95);
+      --bg-card-elevated: #1E293B;
+      --border: rgba(148, 163, 184, 0.35);
+      --text-secondary: #CBD5E1;
+    }
+
+    /* Base Reset & Typography */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      color-scheme: dark;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      min-height: 100vh;
+      overflow-x: hidden;
+      line-height: 1.55;
+      background-image: 
+        radial-gradient(circle at 12% 10%, rgba(34, 211, 238, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 88% 22%, rgba(139, 92, 246, 0.10) 0%, transparent 48%),
+        radial-gradient(circle at 50% 85%, rgba(244, 114, 182, 0.05) 0%, transparent 55%),
+        linear-gradient(180deg, var(--bg-main) 0%, var(--bg-secondary) 100%);
+      background-attachment: fixed;
+    }
+
+    /* ==========================================================================
+       TOP NAVIGATION
+       ========================================================================== */
+    .top-nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      background: rgba(8, 11, 22, 0.82);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .brand-icon-wrapper {
+      position: relative;
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-md);
+      background: linear-gradient(135deg, rgba(34, 211, 238, 0.2), rgba(139, 92, 246, 0.25));
+      border: 1px solid rgba(34, 211, 238, 0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 16px var(--cyan-glow);
+    }
+
+    .brand-icon {
+      width: 22px;
+      height: 22px;
+      fill: none;
+      stroke: var(--cyan);
+      stroke-width: 2;
+    }
+
+    .brand-title {
+      font-size: 1.18rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #FFFFFF 30%, var(--cyan) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: block;
+      line-height: 1.2;
+    }
+
+    .brand-subtitle {
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      font-weight: 400;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    /* Model Status Pill Badge */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: 9999px;
+      font-size: 0.82rem;
+      font-weight: 500;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      transition: var(--transition-smooth);
+    }
+
+    .status-badge .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--text-muted);
+      transition: var(--transition-smooth);
+    }
+
+    .status-badge.ready .dot {
+      background: var(--success);
+      box-shadow: 0 0 8px var(--success);
+    }
+
+    .status-badge.working .dot {
+      background: var(--cyan);
+      box-shadow: 0 0 8px var(--cyan);
+      animation: pulse-dot 1.2s infinite ease-in-out;
+    }
+
+    .status-badge.error .dot {
+      background: var(--error);
+      box-shadow: 0 0 8px var(--error);
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.35); opacity: 0.6; }
+    }
+
+    .icon-btn {
+      background: rgba(19, 27, 48, 0.7);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      width: 38px;
+      height: 38px;
+      border-radius: var(--radius-md);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+    }
+
+    .icon-btn:hover {
+      color: var(--text-main);
+      border-color: var(--cyan);
+      background: rgba(34, 211, 238, 0.1);
+      transform: translateY(-1px);
+    }
+
+    .icon-btn svg {
+      width: 18px;
+      height: 18px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* ==========================================================================
+       MAIN DASHBOARD LAYOUT (70% / 30%)
+       ========================================================================== */
+    .app-container {
+      max-width: 1540px;
+      margin: 0 auto;
+      padding: 24px 20px 80px 20px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 380px;
+      gap: 26px;
+      align-items: start;
+    }
+
+    @media (max-width: 1120px) {
+      .app-container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .main-column {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      min-width: 0;
+    }
+
+    .sidebar-column {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      position: sticky;
+      top: 86px;
+    }
+
+    @media (max-width: 1120px) {
+      .sidebar-column {
+        position: static;
+      }
+    }
+
+    /* ==========================================================================
+       CARD & GLASSMORPHISM STYLES
+       ========================================================================== */
+    .glass-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.45);
+      position: relative;
+      overflow: hidden;
+      transition: var(--transition-smooth);
+    }
+
+    .glass-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(34, 211, 238, 0.35), rgba(139, 92, 246, 0.35), transparent);
+      opacity: 0.8;
+    }
+
+    .glass-card:hover {
+      border-color: rgba(148, 163, 184, 0.28);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .card-title-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .card-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: -0.015em;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .card-title-icon {
+      color: var(--cyan);
+      display: inline-flex;
+    }
+
+    .card-subtitle {
+      font-size: 0.86rem;
+      color: var(--text-secondary);
+      line-height: 1.4;
+    }
+
+    .badge-simulated {
+      background: rgba(244, 114, 182, 0.15);
+      border: 1px solid rgba(244, 114, 182, 0.35);
+      color: var(--pink);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 9999px;
+    }
+
+    /* ==========================================================================
+       BUTTONS & CONTROLS
+       ========================================================================== */
+    .btn {
+      font-family: var(--font-sans);
+      font-size: 0.9rem;
+      font-weight: 600;
+      padding: 10px 20px;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: var(--transition-smooth);
+      border: 1px solid transparent;
+      outline: none;
+      text-decoration: none;
+      user-select: none;
+      white-space: nowrap;
+    }
+
+    .btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      transform: none !important;
+      box-shadow: none !important;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #06B6D4 0%, #8B5CF6 100%);
+      color: #FFFFFF;
+      box-shadow: 0 4px 20px -4px var(--cyan-glow);
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      box-shadow: 0 6px 26px -2px rgba(34, 211, 238, 0.45);
+      transform: translateY(-1.5px);
+    }
+
+    .btn-secondary {
+      background: rgba(19, 27, 48, 0.9);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+    }
+
+    .btn-secondary:hover:not(:disabled) {
+      border-color: var(--cyan);
+      background: rgba(34, 211, 238, 0.12);
+      color: var(--cyan-light);
+      transform: translateY(-1px);
+    }
+
+    .btn-danger {
+      background: rgba(251, 113, 133, 0.12);
+      border: 1px solid rgba(251, 113, 133, 0.3);
+      color: var(--error);
+    }
+
+    .btn-danger:hover:not(:disabled) {
+      background: rgba(251, 113, 133, 0.22);
+      border-color: var(--error);
+    }
+
+    .btn-sm {
+      padding: 6px 12px;
+      font-size: 0.8rem;
+      border-radius: var(--radius-sm);
+    }
+
+    /* ==========================================================================
+       SECTION 4: SENTENCE LAB
+       ========================================================================== */
+    .sample-chips-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 16px;
+      align-items: center;
+    }
+
+    .sample-label {
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-right: 4px;
+    }
+
+    .sample-btn {
+      background: rgba(19, 27, 48, 0.65);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      padding: 6px 12px;
+      border-radius: 9999px;
+      font-size: 0.82rem;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+      font-family: inherit;
+    }
+
+    .sample-btn:hover {
+      background: rgba(34, 211, 238, 0.12);
+      border-color: var(--cyan);
+      color: var(--cyan-light);
+      transform: translateY(-1px);
+    }
+
+    .input-wrapper {
+      position: relative;
+      margin-bottom: 14px;
+    }
+
+    .sentence-textarea {
+      width: 100%;
+      min-height: 110px;
+      background: rgba(13, 18, 36, 0.85);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px 18px;
+      color: var(--text-main);
+      font-size: 1.05rem;
+      font-family: var(--font-sans);
+      resize: vertical;
+      line-height: 1.5;
+      transition: var(--transition-smooth);
+      outline: none;
+    }
+
+    .sentence-textarea:focus {
+      border-color: var(--cyan);
+      box-shadow: 0 0 0 3px var(--cyan-glow);
+    }
+
+    .sentence-meta-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .counters-group {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+    }
+
+    .counter-item span {
+      color: var(--cyan);
+      font-weight: 600;
+      font-family: var(--font-mono);
+    }
+
+    .actions-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Model Download / Inference Progress Bar */
+    .progress-container {
+      margin-top: 14px;
+      padding: 14px 16px;
+      background: rgba(13, 18, 36, 0.9);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      display: none;
+    }
+
+    .progress-container.active {
+      display: block;
+      animation: fadeIn 0.25s ease;
+    }
+
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.84rem;
+      margin-bottom: 8px;
+      color: var(--text-secondary);
+    }
+
+    .progress-header .progress-phase {
+      color: var(--cyan-light);
+      font-weight: 600;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 9999px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--cyan), var(--violet));
+      border-radius: 9999px;
+      transition: width 0.2s ease;
+      box-shadow: 0 0 10px var(--cyan-glow);
+    }
+
+    .progress-fill.indeterminate {
+      width: 40% !important;
+      position: absolute;
+      animation: indeterminate 1.5s infinite ease-in-out;
+    }
+
+    @keyframes indeterminate {
+      0% { left: -40%; }
+      100% { left: 100%; }
+    }
+
+    /* ==========================================================================
+       SECTION 6: TOKENIZATION & TOKEN VISUALIZATION
+       ========================================================================== */
+    .token-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 16px;
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+    }
+
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .legend-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .chips-flex-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      min-height: 52px;
+      padding: 16px;
+      background: rgba(13, 18, 36, 0.65);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+    }
+
+    .token-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      font-size: 0.9rem;
+      font-family: var(--font-mono);
+      cursor: pointer;
+      transition: var(--transition-smooth);
+      position: relative;
+      user-select: none;
+    }
+
+    .token-chip:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    }
+
+    .token-chip.selected {
+      outline: 2px solid var(--cyan);
+      box-shadow: 0 0 14px var(--cyan-glow);
+    }
+
+    /* Category colors */
+    .token-chip.cat-special {
+      background: rgba(139, 92, 246, 0.15);
+      border: 1px dashed rgba(167, 139, 250, 0.6);
+      color: #DDD6FE;
+    }
+
+    .token-chip.cat-word {
+      background: rgba(34, 211, 238, 0.12);
+      border: 1px solid rgba(34, 211, 238, 0.3);
+      color: var(--cyan-light);
+    }
+
+    .token-chip.cat-space {
+      background: rgba(244, 114, 182, 0.12);
+      border: 1px solid rgba(244, 114, 182, 0.3);
+      color: #F9A8D4;
+    }
+
+    .token-chip.cat-punct {
+      background: rgba(251, 191, 36, 0.12);
+      border: 1px solid rgba(251, 191, 36, 0.3);
+      color: #FCD34D;
+    }
+
+    .token-chip .token-idx {
+      font-size: 0.68rem;
+      opacity: 0.7;
+      font-family: var(--font-sans);
+    }
+
+    .token-chip .token-id-tag {
+      font-size: 0.68rem;
+      background: rgba(0, 0, 0, 0.35);
+      padding: 2px 6px;
+      border-radius: 4px;
+      opacity: 0.85;
+    }
+
+    /* Token Inspector Drawer / Panel */
+    .inspector-panel {
+      margin-top: 16px;
+      padding: 18px;
+      background: var(--bg-card-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      display: none;
+      animation: fadeIn 0.2s ease;
+    }
+
+    .inspector-panel.active {
+      display: block;
+    }
+
+    .inspector-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+      margin-top: 12px;
+    }
+
+    .inspector-item {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      background: rgba(8, 11, 22, 0.6);
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .inspector-label {
+      font-size: 0.72rem;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .inspector-val {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--cyan);
+      font-family: var(--font-mono);
+    }
+
+    /* ==========================================================================
+       SECTION 8: PERPLEXITY CALCULATOR
+       ========================================================================== */
+    .perplexity-hero {
+      display: grid;
+      grid-template-columns: 1fr 1.3fr;
+      gap: 24px;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    @media (max-width: 768px) {
+      .perplexity-hero {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .score-display-card {
+      background: linear-gradient(145deg, rgba(34, 211, 238, 0.08), rgba(139, 92, 246, 0.12));
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      border-radius: var(--radius-lg);
+      padding: 26px 20px;
+      text-align: center;
+      box-shadow: 0 0 30px -10px var(--violet-glow);
+    }
+
+    .score-label {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+
+    .score-number {
+      font-size: 3.4rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1;
+      background: linear-gradient(135deg, #22D3EE 20%, #A78BFA 60%, #F472B6 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin: 8px 0;
+      font-family: var(--font-mono);
+      filter: drop-shadow(0 0 16px var(--cyan-glow));
+    }
+
+    .score-rating {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      background: rgba(34, 211, 238, 0.12);
+      color: var(--cyan);
+      border: 1px solid rgba(34, 211, 238, 0.3);
+    }
+
+    .metrics-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .metric-box {
+      background: rgba(13, 18, 36, 0.7);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px;
+    }
+
+    .metric-box-label {
+      font-size: 0.76rem;
+      color: var(--text-secondary);
+      margin-bottom: 4px;
+    }
+
+    .metric-box-val {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-main);
+      font-family: var(--font-mono);
+    }
+
+    /* 3-Step Educational Visualizer */
+    .steps-container {
+      margin-top: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .step-card {
+      background: rgba(13, 18, 36, 0.75);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--cyan);
+      border-radius: var(--radius-sm);
+      padding: 14px 18px;
+      transition: var(--transition-smooth);
+    }
+
+    .step-card:nth-child(2) {
+      border-left-color: var(--violet);
+    }
+
+    .step-card:nth-child(3) {
+      border-left-color: var(--pink);
+    }
+
+    .step-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: var(--text-main);
+      margin-bottom: 6px;
+    }
+
+    .step-num {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: rgba(34, 211, 238, 0.18);
+      color: var(--cyan);
+      font-size: 0.76rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+    }
+
+    .step-card:nth-child(2) .step-num {
+      background: rgba(139, 92, 246, 0.18);
+      color: var(--violet-light);
+    }
+
+    .step-card:nth-child(3) .step-num {
+      background: rgba(244, 114, 182, 0.18);
+      color: var(--pink);
+    }
+
+    .step-content {
+      font-size: 0.86rem;
+      color: var(--text-secondary);
+      font-family: var(--font-mono);
+      line-height: 1.5;
+      overflow-x: auto;
+      padding: 4px 0;
+    }
+
+    .edu-note-box {
+      margin-top: 18px;
+      padding: 14px 16px;
+      background: rgba(34, 211, 238, 0.05);
+      border: 1px solid rgba(34, 211, 238, 0.2);
+      border-radius: var(--radius-md);
+      font-size: 0.84rem;
+      color: var(--text-secondary);
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .edu-note-box svg {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+      color: var(--cyan);
+      margin-top: 2px;
+    }
+
+    /* ==========================================================================
+       SECTION 7: TOKEN PROBABILITY TABLE
+       ========================================================================== */
+    .table-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .search-input {
+      background: rgba(13, 18, 36, 0.8);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 8px 14px;
+      color: var(--text-main);
+      font-size: 0.86rem;
+      font-family: inherit;
+      outline: none;
+      min-width: 220px;
+      transition: var(--transition-smooth);
+    }
+
+    .search-input:focus {
+      border-color: var(--cyan);
+      box-shadow: 0 0 0 2px var(--cyan-glow);
+    }
+
+    .toggle-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.84rem;
+      color: var(--text-secondary);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .table-responsive {
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      background: rgba(13, 18, 36, 0.6);
+    }
+
+    .custom-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.86rem;
+      text-align: left;
+    }
+
+    .custom-table th {
+      background: rgba(19, 27, 48, 0.95);
+      padding: 12px 14px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      user-select: none;
+      white-space: nowrap;
+      transition: var(--transition-smooth);
+    }
+
+    .custom-table th:hover {
+      color: var(--cyan);
+    }
+
+    .custom-table th .sort-icon {
+      font-size: 0.7rem;
+      margin-left: 4px;
+      opacity: 0.6;
+    }
+
+    .custom-table td {
+      padding: 12px 14px;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.08);
+      font-family: var(--font-mono);
+      white-space: nowrap;
+    }
+
+    .custom-table tbody tr {
+      transition: background 0.15s ease;
+      cursor: pointer;
+    }
+
+    .custom-table tbody tr:hover {
+      background: rgba(34, 211, 238, 0.08);
+    }
+
+    .custom-table tbody tr.selected {
+      background: rgba(139, 92, 246, 0.15);
+      outline: 1px solid var(--violet);
+    }
+
+    .cell-token {
+      color: var(--cyan);
+      font-weight: 600;
+      background: rgba(34, 211, 238, 0.08);
+      padding: 3px 8px;
+      border-radius: 4px;
+      display: inline-block;
+    }
+
+    .advanced-col {
+      display: none;
+    }
+
+    .show-advanced .advanced-col {
+      display: table-cell;
+    }
+
+    /* ==========================================================================
+       SECTION 11: TOKEN PROBABILITY HEATMAP
+       ========================================================================== */
+    .heatmap-controls-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .segmented-control {
+      display: inline-flex;
+      background: rgba(13, 18, 36, 0.85);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 3px;
+    }
+
+    .seg-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 0.82rem;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+    }
+
+    .seg-btn.active {
+      background: linear-gradient(135deg, rgba(34, 211, 238, 0.25), rgba(139, 92, 246, 0.25));
+      color: #FFFFFF;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .heatmap-cells-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 20px;
+      background: rgba(13, 18, 36, 0.65);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      min-height: 70px;
+    }
+
+    .heatmap-cell {
+      padding: 8px 14px;
+      border-radius: var(--radius-sm);
+      font-family: var(--font-mono);
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+      position: relative;
+      border: 1px solid transparent;
+      user-select: none;
+    }
+
+    .heatmap-cell:hover {
+      transform: scale(1.06);
+      z-index: 10;
+      border-color: #FFFFFF;
+    }
+
+    .heatmap-legend {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      margin-top: 14px;
+    }
+
+    .legend-bar {
+      flex: 1;
+      height: 8px;
+      margin: 0 12px;
+      border-radius: 9999px;
+    }
+
+    .legend-bar.prob-scale {
+      background: linear-gradient(90deg, #1E293B, #0E7490, #06B6D4, #22D3EE);
+    }
+
+    .legend-bar.surprise-scale {
+      background: linear-gradient(90deg, #0F172A, #3B82F6, #8B5CF6, #F472B6);
+    }
+
+    /* ==========================================================================
+       SECTION 9: NEXT-TOKEN PREDICTIONS
+       ========================================================================== */
+    .predictions-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .custom-select {
+      background: rgba(13, 18, 36, 0.85);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 8px 12px;
+      color: var(--text-main);
+      font-size: 0.86rem;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .predictions-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .prediction-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 10px 16px;
+      background: rgba(13, 18, 36, 0.7);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      position: relative;
+      overflow: hidden;
+      transition: var(--transition-smooth);
+    }
+
+    .prediction-item:hover {
+      background: rgba(19, 27, 48, 0.95);
+      border-color: rgba(34, 211, 238, 0.3);
+    }
+
+    .prediction-item.top-pick {
+      background: linear-gradient(90deg, rgba(34, 211, 238, 0.12), rgba(139, 92, 246, 0.12));
+      border-color: rgba(34, 211, 238, 0.45);
+      box-shadow: 0 0 18px -4px var(--cyan-glow);
+    }
+
+    .pred-rank {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      width: 28px;
+    }
+
+    .prediction-item.top-pick .pred-rank {
+      color: var(--cyan);
+    }
+
+    .pred-token-name {
+      font-family: var(--font-mono);
+      font-size: 0.94rem;
+      font-weight: 600;
+      color: var(--text-main);
+      min-width: 120px;
+    }
+
+    .pred-bar-wrapper {
+      flex: 1;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 9999px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .pred-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--cyan), var(--violet));
+      border-radius: 9999px;
+      transition: width 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .pred-prob-val {
+      font-family: var(--font-mono);
+      font-size: 0.84rem;
+      font-weight: 600;
+      color: var(--cyan-light);
+      min-width: 60px;
+      text-align: right;
+    }
+
+    .pred-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* ==========================================================================
+       SECTION 10: INTERACTIVE NEXT-TOKEN GENERATION
+       ========================================================================== */
+    .controls-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .control-item {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .control-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    .control-val {
+      font-family: var(--font-mono);
+      color: var(--cyan);
+      font-weight: 600;
+    }
+
+    .custom-range {
+      width: 100%;
+      height: 6px;
+      border-radius: 9999px;
+      background: rgba(255, 255, 255, 0.1);
+      outline: none;
+      -webkit-appearance: none;
+    }
+
+    .custom-range::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--cyan);
+      cursor: pointer;
+      box-shadow: 0 0 8px var(--cyan-glow);
+      transition: transform 0.15s ease;
+    }
+
+    .custom-range::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+    }
+
+    .generation-output-box {
+      background: rgba(13, 18, 36, 0.85);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 18px;
+      min-height: 90px;
+      font-size: 1.05rem;
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+
+    .gen-original-part {
+      color: var(--text-secondary);
+    }
+
+    .gen-continuation-part {
+      color: var(--violet-light);
+      font-weight: 500;
+      text-shadow: 0 0 10px var(--violet-glow);
+    }
+
+    .typing-cursor {
+      display: inline-block;
+      width: 2px;
+      height: 1.1em;
+      background: var(--cyan);
+      vertical-align: middle;
+      margin-left: 2px;
+      animation: blink 0.8s infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    /* ==========================================================================
+       SECTION 12: SIMULATED PERPLEXITY CALCULATOR (SANDBOX)
+       ========================================================================== */
+    .sandbox-presets-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 18px;
+      align-items: center;
+    }
+
+    .sandbox-rows-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .sandbox-row-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(13, 18, 36, 0.7);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 8px 14px;
+      transition: var(--transition-smooth);
+    }
+
+    .sandbox-row-item:hover {
+      border-color: rgba(148, 163, 184, 0.3);
+    }
+
+    .sandbox-token-input {
+      background: rgba(8, 11, 22, 0.8);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 6px 10px;
+      color: var(--text-main);
+      font-family: var(--font-mono);
+      font-size: 0.86rem;
+      width: 120px;
+      outline: none;
+    }
+
+    .sandbox-prob-input {
+      background: rgba(8, 11, 22, 0.8);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 6px 10px;
+      color: var(--cyan);
+      font-family: var(--font-mono);
+      font-size: 0.86rem;
+      width: 100px;
+      outline: none;
+      font-weight: 600;
+    }
+
+    .sandbox-slider {
+      flex: 1;
+      min-width: 80px;
+    }
+
+    .sandbox-surprise-tag {
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      color: var(--pink);
+      min-width: 90px;
+      text-align: right;
+    }
+
+    .btn-delete-row {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 4px;
+      transition: var(--transition-smooth);
+    }
+
+    .btn-delete-row:hover {
+      color: var(--error);
+      background: rgba(251, 113, 133, 0.15);
+    }
+
+    .sandbox-summary-card {
+      background: linear-gradient(135deg, rgba(244, 114, 182, 0.08), rgba(139, 92, 246, 0.08));
+      border: 1px solid rgba(244, 114, 182, 0.25);
+      border-radius: var(--radius-md);
+      padding: 18px;
+      margin-top: 14px;
+    }
+
+    .sandbox-result-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 12px;
+      text-align: center;
+    }
+
+    .sandbox-stat-item .val {
+      font-size: 1.8rem;
+      font-weight: 800;
+      font-family: var(--font-mono);
+      color: var(--pink);
+    }
+
+    .sandbox-stat-item .lbl {
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .sandbox-formula-box {
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      background: rgba(8, 11, 22, 0.7);
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      overflow-x: auto;
+    }
+
+    .sandbox-error-banner {
+      background: rgba(251, 113, 133, 0.15);
+      border: 1px solid var(--error);
+      color: var(--error);
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 0.84rem;
+      margin-bottom: 14px;
+      display: none;
+    }
+
+    /* ==========================================================================
+       SIDEBAR COMPONENTS
+       ========================================================================== */
+    .info-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.85rem;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.08);
+    }
+
+    .info-row:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .info-lbl {
+      color: var(--text-secondary);
+    }
+
+    .info-val {
+      color: var(--text-main);
+      font-weight: 600;
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+    }
+
+    .tip-card {
+      background: rgba(13, 18, 36, 0.75);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      margin-bottom: 10px;
+    }
+
+    .tip-title {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--cyan);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .tip-body {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    /* ==========================================================================
+       MODALS
+       ========================================================================== */
+    .modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+
+    .modal-backdrop.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-window {
+      background: var(--bg-card-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      max-width: 680px;
+      width: 100%;
+      max-height: 88vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+      transform: translateY(20px);
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .modal-backdrop.open .modal-window {
+      transform: translateY(0);
+    }
+
+    .modal-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .modal-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .modal-body {
+      padding: 24px;
+      overflow-y: auto;
+      font-size: 0.92rem;
+      color: var(--text-secondary);
+      line-height: 1.65;
+    }
+
+    .modal-body h3 {
+      color: var(--cyan);
+      font-size: 1.05rem;
+      margin: 18px 0 8px 0;
+    }
+
+    .modal-body h3:first-child {
+      margin-top: 0;
+    }
+
+    .modal-body p {
+      margin-bottom: 12px;
+    }
+
+    .modal-body ul {
+      margin-left: 20px;
+      margin-bottom: 14px;
+    }
+
+    .modal-body code {
+      background: rgba(8, 11, 22, 0.8);
+      color: var(--pink);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-size: 0.85em;
+    }
+
+    .formula-banner {
+      background: rgba(8, 11, 22, 0.85);
+      border-left: 3px solid var(--violet);
+      padding: 12px 16px;
+      margin: 14px 0;
+      font-family: var(--font-mono);
+      color: #DDD6FE;
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    }
+
+    .modal-footer {
+      padding: 16px 24px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 7px;
+      height: 7px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--bg-main);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, 0.25);
+      border-radius: 9999px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(148, 163, 184, 0.45);
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ==========================================================================
+       TOP NAVIGATION
+       ========================================================================== -->
+  <header class="top-nav">
+    <div class="nav-brand">
+      <div class="brand-icon-wrapper">
+        <svg class="brand-icon" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M12 3v3m0 12v3M3 12h3m12 0h3"></path>
+          <path d="m5.6 5.6 2.1 2.1m8.6 8.6 2.1 2.1m0-12.8-2.1 2.1M7.7 16.3l-2.1 2.1"></path>
+        </svg>
+      </div>
+      <div>
+        <span class="brand-title">Perplexity Explorer</span>
+        <span class="brand-subtitle">Understand how language models think</span>
+      </div>
+    </div>
+
+    <div class="nav-actions">
+      <!-- Status Badge -->
+      <div id="model-status-badge" class="status-badge">
+        <span class="dot"></span>
+        <span id="model-status-text">Waiting for input</span>
+      </div>
+
+      <!-- Theme Switcher -->
+      <button id="btn-theme-toggle" class="icon-btn" title="Toggle Theme" aria-label="Toggle Theme">
+        <svg viewBox="0 0 24 24">
+          <path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 0 1-4.4 2.26 5.403 5.403 0 0 1-3.14-9.8c-.44-.06-.9-.1-1.36-.1z"></path>
+        </svg>
+      </button>
+
+      <!-- Settings Button -->
+      <button id="btn-open-settings" class="icon-btn" title="Settings" aria-label="Settings">
+        <svg viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+        </svg>
+      </button>
+
+      <!-- Info / Learning Guide Modal Button -->
+      <button id="btn-open-info" class="icon-btn" title="Learn & Educational Guide" aria-label="Learn & Educational Guide">
+        <svg viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="10"></circle>
+          <path d="M12 16v-4m0-4h.01"></path>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- ==========================================================================
+       MAIN APP CONTAINER (70% Main, 30% Sidebar)
+       ========================================================================== -->
+  <main class="app-container">
+    
+    <!-- LEFT / MAIN COLUMN (70%) -->
+    <div class="main-column">
+
+      <!-- SECTION 4: SENTENCE LAB -->
+      <section class="glass-card" id="section-sentence-lab">
+        <div class="card-header">
+          <div class="card-title-group">
+            <h2 class="card-title">
+              <span class="card-title-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m18 16 4-4-4-4M6 8l-4 4 4 4m8.5-12-5 16"/></svg>
+              </span>
+              Sentence Lab
+            </h2>
+            <p class="card-subtitle">Enter a sentence and explore how the model understands it.</p>
+          </div>
+        </div>
+
+        <!-- Sample Sentences -->
+        <div class="sample-chips-row">
+          <span class="sample-label">Try sample:</span>
+          <button class="sample-btn" data-sentence="I love Python">1. I love Python</button>
+          <button class="sample-btn" data-sentence="Python love I">2. Python love I</button>
+          <button class="sample-btn" data-sentence="The capital of France is Paris">3. The capital of France is Paris</button>
+          <button class="sample-btn" data-sentence="Artificial intelligence is changing the world">4. Artificial intelligence is changing the world</button>
+          <button class="sample-btn" data-sentence="I am learning machine learning">5. I am learning machine learning</button>
+        </div>
+
+        <!-- Text Input -->
+        <div class="input-wrapper">
+          <textarea id="sentence-input" class="sentence-textarea" placeholder="Type or paste any English sentence here..." spellcheck="false">I love Python</textarea>
+        </div>
+
+        <!-- Sentence Meta & Actions -->
+        <div class="sentence-meta-row">
+          <div class="counters-group">
+            <div class="counter-item">Characters: <span id="char-counter">13</span></div>
+            <div class="counter-item">Words: <span id="word-counter">3</span></div>
+            <div class="counter-item">Estimated Tokens: <span id="token-counter">3</span></div>
+          </div>
+
+          <div class="actions-group">
+            <button id="btn-clear-sentence" class="btn btn-secondary btn-sm" title="Clear input text">Clear</button>
+            <button id="btn-reset-sentence" class="btn btn-secondary btn-sm" title="Reset to default">Reset</button>
+            <button id="btn-analyze" class="btn btn-primary">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              <span>Analyze Sentence</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Real Model Download & Initialization Progress Bar -->
+        <div id="model-progress-card" class="progress-container">
+          <div class="progress-header">
+            <span id="progress-phase-label" class="progress-phase">Downloading tokenizer...</span>
+            <span id="progress-percentage-label">0%</span>
+          </div>
+          <div class="progress-track">
+            <div id="progress-fill-bar" class="progress-fill"></div>
+          </div>
+          <div id="progress-detail-text" style="font-size: 0.76rem; color: var(--text-muted); margin-top: 6px;">
+            Connecting to Hugging Face Hub (first-time download cached in browser)...
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 6: TOKENIZATION & TOKEN VISUALIZATION -->
+      <section class="glass-card" id="section-tokenization">
+        <div class="card-header">
+          <div class="card-title-group">
+            <h2 class="card-title">
+              <span class="card-title-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M7 8h10M7 12h10M7 16h6"/></svg>
+              </span>
+              Tokenization Result
+            </h2>
+            <p class="card-subtitle">Real Byte-Pair Encoding (BPE) subword chips. Click any token to inspect.</p>
+          </div>
+        </div>
+
+        <!-- Token Category Legend -->
+        <div class="token-legend">
+          <span class="legend-item"><span class="legend-dot" style="background: var(--violet-light);"></span> Special Prefix (50256)</span>
+          <span class="legend-item"><span class="legend-dot" style="background: var(--cyan);"></span> Word Token</span>
+          <span class="legend-item"><span class="legend-dot" style="background: var(--pink);"></span> Whitespace Preceded (␣)</span>
+          <span class="legend-item"><span class="legend-dot" style="background: var(--warning);"></span> Punctuation</span>
+        </div>
+
+        <!-- Colored Chips Container -->
+        <div id="token-chips-wrapper" class="chips-flex-container">
+          <div style="width:100%; text-align:center; padding:18px 12px; color:var(--text-muted); font-size:0.86rem; display:flex; flex-direction:column; align-items:center; gap:6px;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:0.6;"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M7 8h10M7 12h10M7 16h6"/></svg>
+            <span>Token sequence will appear here. Click <strong>Analyze Sentence</strong> to tokenize with BPE.</span>
+          </div>
+        </div>
+
+        <!-- Token Inspector Panel -->
+        <div id="token-inspector" class="inspector-panel">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div style="font-size:0.86rem; font-weight:700; color:var(--text-main); display:flex; align-items:center; gap:8px;">
+              <span>Token Inspector:</span>
+              <span id="inspect-token-name" style="color:var(--cyan); font-family:var(--font-mono); font-size:1.05rem;"></span>
+            </div>
+            <button id="btn-close-inspector" class="icon-btn btn-sm" style="width:28px; height:28px;" title="Close Inspector">✕</button>
+          </div>
+          <div class="inspector-grid">
+            <div class="inspector-item">
+              <span class="inspector-label">Token ID</span>
+              <span id="inspect-token-id" class="inspector-val">-</span>
+            </div>
+            <div class="inspector-item">
+              <span class="inspector-label">Sentence Position</span>
+              <span id="inspect-token-pos" class="inspector-val">-</span>
+            </div>
+            <div class="inspector-item">
+              <span class="inspector-label">Model Probability P</span>
+              <span id="inspect-token-prob" class="inspector-val">-</span>
+            </div>
+            <div class="inspector-item">
+              <span class="inspector-label">Surprise (-ln P)</span>
+              <span id="inspect-token-nll" class="inspector-val">-</span>
+            </div>
+            <div class="inspector-item">
+              <span class="inspector-label">Surprise (Bits)</span>
+              <span id="inspect-token-bits" class="inspector-val">-</span>
+            </div>
+            <div class="inspector-item">
+              <span class="inspector-label">Inverse Prob (1/P)</span>
+              <span id="inspect-token-inv" class="inspector-val">-</span>
+            </div>
+          </div>
+          <p id="inspect-explanation" style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 10px;"></p>
+        </div>
+      </section>
+
+      <!-- SECTION 8: PERPLEXITY CALCULATOR -->
+      <section class="glass-card" id="section-perplexity">
+        <div class="card-header">
+          <div class="card-title-group">
+            <h2 class="card-title">
+              <span class="card-title-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+              </span>
+              Perplexity & Surprise Score
+            </h2>
+            <p class="card-subtitle">Perplexity measures the model's overall uncertainty across the sequence.</p>
+          </div>
+        </div>
+
+        <div class="perplexity-hero">
+          <!-- Big Glowing Score Card -->
+          <div class="score-display-card">
+            <div class="score-label">Sentence Perplexity</div>
+            <div id="stat-perplexity-number" class="score-number">-</div>
+            <div id="stat-perplexity-badge" class="score-rating">Awaiting analysis</div>
+          </div>
+
+          <!-- Supporting Metrics Grid -->
+          <div class="metrics-stats-grid">
+            <div class="metric-box">
+              <div class="metric-box-label">Average NLL (Cross-Entropy)</div>
+              <div id="stat-avg-nll" class="metric-box-val">-</div>
+            </div>
+            <div class="metric-box">
+              <div class="metric-box-label">Sentence Tokens (N)</div>
+              <div id="stat-num-tokens" class="metric-box-val">-</div>
+            </div>
+            <div class="metric-box">
+              <div class="metric-box-label">Total Negative Log-Likelihood</div>
+              <div id="stat-total-nll" class="metric-box-val">-</div>
+            </div>
+            <div class="metric-box">
+              <div class="metric-box-label">Bits per Token (log₂)</div>
+              <div id="stat-bits-token" class="metric-box-val">-</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3-Step Educational Breakdown -->
+        <div class="steps-container">
+          <div class="step-card">
+            <div class="step-header">
+              <span class="step-num">1</span>
+              <span>Calculate token surprises (-ln P)</span>
+            </div>
+            <div id="step-1-details" class="step-content">
+              For each token tᵢ, compute its negative log probability: Surprise(tᵢ) = -ln(P(tᵢ | context)).
+            </div>
+          </div>
+
+          <div class="step-card">
+            <div class="step-header">
+              <span class="step-num">2</span>
+              <span>Calculate average surprise (Average NLL)</span>
+            </div>
+            <div id="step-2-details" class="step-content">
+              Average NLL = (∑ -ln(P(tᵢ))) / N
+            </div>
+          </div>
+
+          <div class="step-card">
+            <div class="step-header">
+              <span class="step-num">3</span>
+              <span>Exponentiate to compute Perplexity</span>
+            </div>
+            <div id="step-3-details" class="step-content">
+              Perplexity = exp(Average NLL)
+            </div>
+          </div>
+        </div>
+
+        <div class="edu-note-box">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          <div>
+            <strong>Educational Insight:</strong> Perplexity measures how surprised a language model is by a sequence. Lower perplexity generally means the model considers the sequence more predictable.
+            <div style="margin-top:6px; font-size:0.8rem; color:var(--text-muted);">
+              ⚠️ <em>Important: Perplexity is not a direct measure of truth, intelligence, or grammatical correctness. An untrue statement that uses frequent collocations can have lower perplexity than an obscure fact.</em>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 7: TOKEN PROBABILITY ANALYSIS TABLE -->
+      <section class="glass-card" id="section-prob-table">
+        <div class="card-header">
+          <div class="card-title-group">
+            <h2 class="card-title">
+              <span class="card-title-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v18M3 9h18M3 15h18"/><rect width="18" height="18" x="3" y="3" rx="2"/></svg>
+              </span>
+              Token Probability Analysis Table
+            </h2>
+            <p class="card-subtitle">Exact numerically stable softmax output computed for each sequence position.</p>
+          </div>
+        </div>
+
+        <!-- Table Toolbar -->
+        <div class="table-toolbar">
+          <input type="text" id="table-search-input" class="search-input" placeholder="Search tokens..." aria-label="Search tokens">
+          
+          <label class="toggle-label">
+            <input type="checkbox" id="toggle-advanced-columns">
+            <span>Show advanced columns (Logit, Bits)</span>
+          </label>
+        </div>
+
+        <!-- Table -->
+        <div class="table-responsive">
+          <table class="custom-table" id="tokens-prob-table">
+            <thead>
+              <tr>
+                <th data-sort="index"># <span class="sort-icon">▲</span></th>
+                <th data-sort="token">Token <span class="sort-icon"></span></th>
+                <th data-sort="id">Token ID <span class="sort-icon"></span></th>
+                <th data-sort="prob">Probability P <span class="sort-icon"></span></th>
+                <th data-sort="pct">Percentage <span class="sort-icon"></span></th>
+                <th data-sort="nll">Surprise (-ln P) <span class="sort-icon"></span></th>
+                <th data-sort="inv">Inverse (1/P) <span class="sort-icon"></span></th>
+                <th data-sort="logit" class="advanced-col">Logit L <span class="sort-icon"></span></th>
+                <th data-sort="bits" class="advanced-col">Bits (-log₂ P) <span class="sort-icon"></span></th>
+              </tr>
+            </thead>
+            <tbody id="tokens-table-tbody">
+              <tr>
+                <td colspan="9" style="text-align:center; padding:32px 16px; color:var(--text-muted); font-family:var(--font-sans); font-size:0.86rem;">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin:0 auto 6px auto; opacity:0.6; display:block;"><path d="M12 3v18M3 9h18M3 15h18"/><rect width="18" height="18" x="3" y="3" rx="2"/></svg>
+                  Token probability analysis will populate here after running inference.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- SECTION 11: TOKEN PROBABILITY HEATMAP -->
+      <section class="glass-card" id="section-heatmap">
+        <div class="card-header">
+          <div class="card-title-group">
+            <h2 class="card-title">
+              <span class="card-title-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+              </span>
+              Token Probability Heatmap
+            </h2>
+            <p class="card-subtitle">Visual intensity across sequence. Hover or click cells to view metrics.</p>
+          </div>
+
+          <div class="segmented-control">
+            <button id="btn-view-prob" class="seg-btn active">Probability View</button>
+            <button id="btn-view-surprise" class="seg-btn">Surprise View</button>
+          </div>
+        </div>
+
+        <!-- Heatmap Container -->
+        <div id="heatmap-cells-wrapper" class="heatmap-cells-container">
+          <div style="width:100%; text-align:center; padding:18px 12px; color:var(--text-muted); font-size:0.86rem; display:flex; flex-direction:column; align-items:center; gap:6px;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:0.6;"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+            <span>Token probability and surprise heatmap will display here after analysis.</span>
+          </div>
+        </div>
+
+        <!-- Heatmap Legend -->
+        <div class="heatmap-legend">
+          <span id="legend-low-label">Low Probability (0%)</span>
+          <div id="heatmap-legend-bar" class="legend-bar prob-scale"></div>
+          <span id="legend-high-label">High Probability (100%)</span>
+        </div>
+      </section>
+
+      <!-- SECTION 9: NEXT-TOKEN PREDICTION -->
+      <section class="glass-card" id="section-next-predictions">
+        <div class="card-header">
+          <div class="card-title-group">
+            <h2 class="card-title">
+              <span class="card-title-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </span>
+              What does the model predict next?
+            </h2>
+            <p class="card-subtitle">Probability distribution over the 50,257 vocabulary candidates at the final position.</p>
+          </div>
+        </div>
+
+        <div class="predictions-toolbar">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <label style="font-size:0.82rem; color:var(--text-secondary);">Show:</label>
+            <select id="predictions-k-select" class="custom-select" aria-label="Number of predictions">
+              <option value="5">Top 5</option>
+              <option value="8" selected>Top 8</option>
+              <option value="10">Top 10</option>
+              <option value="20">Top 20</option>
+            </select>
+          </div>
+
+          <input type="text" id="predictions-search-input" class="search-input" placeholder="Search predicted tokens..." aria-label="Search predicted tokens">
+        </div>
+
+        <!-- Predictions List -->
+        <div id="predictions-list-container" class="predictions-list">
+          <div style="text-align:center; padding:24px 16px; color:var(--text-muted); font-size:0.86rem; display:flex; flex-direction:column; align-items:center; gap:6px;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:0.6;"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            <span>Top next-token predictions from the model vocabulary will appear here.</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 10: INTERACTIVE NEXT-TOKEN GENERATION -->
+      <section class="glass-card" id="section-generation">
+        <div class="card-header">
+          <div class="card-title-group">
+            <h2 class="card-title">
+              <span class="card-title-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3z"/></svg>
+              </span>
+              Continue the Sentence
+            </h2>
+            <p class="card-subtitle">Generate autoregressive continuations directly using browser inference.</p>
+          </div>
+        </div>
+
+        <!-- Generation Hyperparameters Grid -->
+        <div class="controls-grid">
+          <div class="control-item">
+            <div class="control-header">
+              <span>Max New Tokens</span>
+              <span id="val-max-tokens" class="control-val">20</span>
+            </div>
+            <input type="range" id="input-max-tokens" class="custom-range" min="5" max="50" value="20" aria-label="Max New Tokens">
+          </div>
+
+          <div class="control-item">
+            <div class="control-header">
+              <span>Temperature</span>
+              <span id="val-temperature" class="control-val">0.70</span>
+            </div>
+            <input type="range" id="input-temperature" class="custom-range" min="0.0" max="1.5" step="0.05" value="0.70" aria-label="Temperature">
+          </div>
+
+          <div class="control-item">
+            <div class="control-header">
+              <span>Top-k</span>
+              <span id="val-top-k" class="control-val">40</span>
+            </div>
+            <input type="range" id="input-top-k" class="custom-range" min="0" max="100" step="5" value="40" aria-label="Top-k">
+          </div>
+
+          <div class="control-item">
+            <div class="control-header">
+              <span>Top-p (Nucleus)</span>
+              <span id="val-top-p" class="control-val">0.90</span>
+            </div>
+            <input type="range" id="input-top-p" class="custom-range" min="0.1" max="1.0" step="0.05" value="0.90" aria-label="Top-p">
+          </div>
+
+          <div class="control-item">
+            <div class="control-header">
+              <span>Repetition Penalty</span>
+              <span id="val-rep-penalty" class="control-val">1.10</span>
+            </div>
+            <input type="range" id="input-rep-penalty" class="custom-range" min="1.0" max="2.0" step="0.05" value="1.10" aria-label="Repetition Penalty">
+          </div>
+        </div>
+
+        <!-- Generation Output Display Box -->
+        <div class="generation-output-box">
+          <span id="gen-original-text" class="gen-original-part">I love Python</span>
+          <span id="gen-stream-text" class="gen-continuation-part"></span>
+          <span id="gen-cursor" class="typing-cursor" style="display:none;"></span>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+          <div style="display:flex; gap:10px;">
+            <button id="btn-start-generation" class="btn btn-primary">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              <span>Generate Continuation</span>
+            </button>
+            <button id="btn-stop-generation" class="btn btn-danger" disabled>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2"/></svg>
+              <span>Stop</span>
+            </button>
+          </div>
+
+          <button id="btn-use-generated" class="btn btn-secondary btn-sm" disabled>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 14 20 9 15 4"/><path d="M4 20v-7a4 4 0 0 1 4-4h12"/></svg>
+            <span>Use generated text as input</span>
+          </button>
+        </div>
+
+        <div style="font-size:0.78rem; color:var(--text-muted); margin-top:12px;">
+          <strong>Educational note:</strong> Sampling parameters (temperature, top-k, top-p) affect text generation diversity, but do not alter the raw perplexity calculation of an existing static sentence.
+        </div>
+      </section>
+
+      <!-- SECTION 12: SIMULATED PERPLEXITY CALCULATOR (SANDBOX) -->
+      <section class="glass-card" id="section-sandbox">
+        <div class="card-header">
+          <div class="card-title-group">
+            <h2 class="card-title">
+              <span class="card-title-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+              </span>
+              Perplexity Sandbox
+              <span class="badge-simulated">SIMULATED — NOT FROM THE MODEL</span>
+            </h2>
+            <p class="card-subtitle">Experiment with probabilities without running the language model.</p>
+          </div>
+        </div>
+
+        <div id="sandbox-error-banner" class="sandbox-error-banner"></div>
+
+        <!-- Sandbox Presets -->
+        <div class="sandbox-presets-row">
+          <span class="sample-label">Presets:</span>
+          <button class="sample-btn" data-preset="confident">1. High Confidence (P ≈ 0.85)</button>
+          <button class="sample-btn" data-preset="uncertain">2. Uncertain (P = 0.50)</button>
+          <button class="sample-btn" data-preset="flat">3. Flat Distribution (P = 0.10)</button>
+          <button class="sample-btn" data-preset="spike">4. Single Catastrophic Surprise (P = 0.001)</button>
+        </div>
+
+        <!-- Editable Rows List -->
+        <div id="sandbox-rows-container" class="sandbox-rows-list">
+          <!-- Populated by JS -->
+        </div>
+
+        <!-- Sandbox Row Actions -->
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+          <button id="btn-sandbox-add-token" class="btn btn-secondary btn-sm">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            <span>Add Token</span>
+          </button>
+
+          <div style="display:flex; gap:8px;">
+            <button id="btn-sandbox-clear-all" class="btn btn-secondary btn-sm">Clear All</button>
+            <button id="btn-sandbox-reset" class="btn btn-secondary btn-sm">Reset</button>
+          </div>
+        </div>
+
+        <!-- Sandbox Calculated Results Summary -->
+        <div class="sandbox-summary-card">
+          <div class="sandbox-result-row">
+            <div class="sandbox-stat-item">
+              <div id="sandbox-perplexity-score" class="val">1.18</div>
+              <div class="lbl">Simulated Perplexity</div>
+            </div>
+            <div class="sandbox-stat-item">
+              <div id="sandbox-avg-nll" class="val">0.163</div>
+              <div class="lbl">Simulated Avg NLL</div>
+            </div>
+            <div class="sandbox-stat-item">
+              <div id="sandbox-token-count" class="val">3</div>
+              <div class="lbl">Tokens in Sandbox</div>
+            </div>
+          </div>
+
+          <div id="sandbox-formula-preview" class="sandbox-formula-box">
+            Perplexity = exp(( -ln(0.85) + -ln(0.85) + -ln(0.85) ) / 3) = 1.18
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- RIGHT / SIDEBAR COLUMN (30%) -->
+    <aside class="sidebar-column">
+
+      <!-- Model Information Card -->
+      <div class="glass-card">
+        <div class="card-header" style="margin-bottom:14px;">
+          <h3 class="card-title" style="font-size:1.05rem;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            Model Information
+          </h3>
+        </div>
+
+        <div class="info-list">
+          <div class="info-row">
+            <span class="info-lbl">Active Model</span>
+            <span id="side-model-name" class="info-val">Xenova/distilgpt2</span>
+          </div>
+          <div class="info-row">
+            <span class="info-lbl">Architecture</span>
+            <span class="info-val">GPT-2 (Causal LM)</span>
+          </div>
+          <div class="info-row">
+            <span class="info-lbl">Quantization</span>
+            <span id="side-quantization" class="info-val">q8 (8-bit Quantized)</span>
+          </div>
+          <div class="info-row">
+            <span class="info-lbl">Parameter Count</span>
+            <span class="info-val">~82 Million</span>
+          </div>
+          <div class="info-row">
+            <span class="info-lbl">Vocabulary Size</span>
+            <span class="info-val">50,257 tokens</span>
+          </div>
+          <div class="info-row">
+            <span class="info-lbl">Execution Device</span>
+            <span id="side-runtime" class="info-val">Browser WASM / WebGPU</span>
+          </div>
+          <div class="info-row">
+            <span class="info-lbl">Prefix Marker</span>
+            <span class="info-val">[50256] &lt;|endoftext|&gt;</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Token Statistics Card -->
+      <div class="glass-card">
+        <div class="card-header" style="margin-bottom:14px;">
+          <h3 class="card-title" style="font-size:1.05rem;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--violet)" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12h8M12 8v8"/></svg>
+            Token Statistics
+          </h3>
+        </div>
+
+        <div class="info-list">
+          <div class="info-row">
+            <span class="info-lbl">Total Characters</span>
+            <span id="side-char-count" class="info-val">13</span>
+          </div>
+          <div class="info-row">
+            <span class="info-lbl">Total Words</span>
+            <span id="side-word-count" class="info-val">3</span>
+          </div>
+          <div class="info-row">
+            <span class="info-lbl">Sentence Tokens</span>
+            <span id="side-token-count" class="info-val">3</span>
+          </div>
+          <div class="info-row">
+            <span class="info-lbl">Compression Ratio</span>
+            <span id="side-compression-ratio" class="info-val">4.33 chars/token</span>
+          </div>
+          <div class="info-row">
+            <span class="info-lbl">Avg Information</span>
+            <span id="side-avg-bits" class="info-val">- bits/token</span>
+          </div>
+          <div class="info-row">
+            <span class="info-lbl">Most Surprising Token</span>
+            <span id="side-max-surprise-token" class="info-val" style="color:var(--pink);">-</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Learning Tips / Flashcards -->
+      <div class="glass-card">
+        <div class="card-header" style="margin-bottom:14px;">
+          <h3 class="card-title" style="font-size:1.05rem;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--pink)" stroke-width="2"><path d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48 2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48 2.83-2.83"/></svg>
+            Learning Tips
+          </h3>
+        </div>
+
+        <div class="tip-card">
+          <div class="tip-title">
+            <span>🎲</span> The Die Sides Analogy
+          </div>
+          <div class="tip-body">
+            A perplexity of <strong>10</strong> means the model was as uncertain as choosing equally among <strong>10</strong> possible words at each step. A perplexity of 1 means 100% certainty.
+          </div>
+        </div>
+
+        <div class="tip-card">
+          <div class="tip-title">
+            <span>🔤</span> Why Prepend Token 50256?
+          </div>
+          <div class="tip-body">
+            Causal language models predict the next token based on previous tokens. For the first word of a sentence, token <code>50256</code> provides the initial conditioning context.
+          </div>
+        </div>
+
+        <div class="tip-card">
+          <div class="tip-title">
+            <span>⚖️</span> Perplexity vs Factuality
+          </div>
+          <div class="tip-body">
+            Grammatically fluent falsehoods can have very low perplexity if the phrasing is common, while rare factual names can have high perplexity.
+          </div>
+        </div>
+      </div>
+
+    </aside>
+
+  </main>
+
+  <!-- ==========================================================================
+       MODALS: EDUCATIONAL GUIDE & SETTINGS
+       ========================================================================== -->
+  <!-- Educational Guide Modal -->
+  <div id="modal-info" class="modal-backdrop">
+    <div class="modal-window">
+      <div class="modal-header">
+        <h2 class="modal-title">Understanding Language Model Perplexity</h2>
+        <button id="btn-close-info" class="icon-btn btn-sm">✕</button>
+      </div>
+      <div class="modal-body">
+        <h3>What is Perplexity?</h3>
+        <p>
+          Perplexity is the standard evaluation metric for probabilistic language models. It is mathematically defined as the exponential of the cross-entropy loss (negative log-likelihood):
+        </p>
+        
+        <div class="formula-banner">
+          Perplexity(W) = exp( - (1 / N) * ∑ ln P(wᵢ | w₁ ... wᵢ₋₁) )
+        </div>
+
+        <p>
+          Intuitively, perplexity represents the <em>effective branching factor</em> of the model. If a model has a perplexity of 50 on a test corpus, it was as confused when making predictions as if it had to choose uniformly at random between 50 words at each step.
+        </p>
+
+        <h3>Why Prepend Token 50256 (&lt;|endoftext|&gt;)?</h3>
+        <p>
+          In causal autoregressive models like GPT-2 and DistilGPT-2, every token prediction is conditioned on prior context:
+          <code>P(tᵢ | t₁ ... tᵢ₋₁)</code>. For the very first word in an isolated sentence, there is no previous word. DistilGPT-2 uses token <code>50256</code> as the Start-of-Sequence / BOS context marker, allowing the model to compute a well-defined probability for the first sentence token.
+        </p>
+
+        <h3>Numerically Stable Softmax</h3>
+        <p>
+          Raw model logits can be large positive or negative floating-point numbers. Standard exponentiation <code>exp(z)</code> can easily cause arithmetic overflow in JavaScript. Perplexity Explorer computes stable log-softmax:
+        </p>
+        <div class="formula-banner">
+          ln P(tᵢ) = (z[tᵢ] - max(z)) - ln( ∑ exp(zⱼ - max(z)) )
+        </div>
+
+        <h3>Byte-Pair Encoding (BPE) Subwords</h3>
+        <p>
+          Modern LLMs do not operate on whole words or single characters. They use subword tokenization (BPE). Common words like "love" form a single token, while rare or compound words are segmented into multiple subword pieces.
+        </p>
+
+        <h3>Important Caveat</h3>
+        <p>
+          Perplexity is an evaluation of statistical likelihood under the model's training distribution. A low perplexity does <strong>not</strong> imply truth, logical reasoning, or moral alignment.
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button id="btn-modal-info-ok" class="btn btn-primary btn-sm">Got it</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings Modal -->
+  <div id="modal-settings" class="modal-backdrop">
+    <div class="modal-window">
+      <div class="modal-header">
+        <h2 class="modal-title">Playground Settings</h2>
+        <button id="btn-close-settings" class="icon-btn btn-sm">✕</button>
+      </div>
+      <div class="modal-body">
+        <h3>Model Selection</h3>
+        <p>Select the Hugging Face ONNX causal language model:</p>
+        <div style="margin-bottom: 16px;">
+          <select id="setting-model-select" class="custom-select" style="width: 100%; padding: 10px;">
+            <option value="Xenova/distilgpt2" selected>Xenova/distilgpt2 (82M params, q8 quantized, ~82MB) - Recommended</option>
+            <option value="Xenova/gpt2">Xenova/gpt2 (124M params, q8 quantized, ~120MB)</option>
+          </select>
+        </div>
+
+        <h3>Browser Cache &amp; Storage</h3>
+        <p>
+          Transformers.js stores downloaded model ONNX weights in the browser's Cache API / IndexedDB. You can purge the model cache if you wish to re-download fresh files.
+        </p>
+        <button id="btn-clear-cache" class="btn btn-secondary btn-sm" style="margin-top: 6px;">
+          Clear Transformers.js Browser Cache
+        </button>
+        <span id="cache-cleared-msg" style="color:var(--success); font-size:0.8rem; margin-left:10px; display:none;">Cache cleared!</span>
+
+        <h3>Visual Theme</h3>
+        <div style="margin-top: 10px;">
+          <select id="setting-theme-select" class="custom-select" style="width: 100%; padding: 10px;">
+            <option value="default" selected>Midnight Indigo (Default)</option>
+            <option value="cosmic">Cosmic Violet</option>
+            <option value="contrast">High Contrast</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="btn-modal-settings-save" class="btn btn-primary btn-sm">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       TRANSFORMERS.JS & APPLICATION LOGIC (MODULE SCRIPT)
+       ========================================================================== -->
+  <script type="module">
+    // Import Transformers.js v3 from jsDelivr ESM CDN
+    import { 
+      AutoTokenizer, 
+      AutoModelForCausalLM, 
+      Tensor, 
+      env 
+    } from "https://cdn.jsdelivr.net/npm/@huggingface/transformers@3";
+
+    // Configure environment: disable local filesystem check in browser, enable browser cache
+    if (env) {
+      env.allowLocalModels = false;
+      env.useBrowserCache = true;
+    }
+
+    /* --------------------------------------------------------------------------
+       APPLICATION STATE
+       -------------------------------------------------------------------------- */
+    const state = {
+      modelId: 'Xenova/distilgpt2',
+      tokenizer: null,
+      model: null,
+      isLoadingModel: false,
+      isModelReady: false,
+      isAnalyzing: false,
+      isGenerating: false,
+      abortGeneration: false,
+      
+      // Last analyzed results
+      rawSentence: 'I love Python',
+      sentenceTokens: [],      // array of token objects
+      fullTokenIds: [],        // [50256, ...sentenceTokenIds]
+      vocabSize: 50257,
+      perplexity: 0,
+      avgNLL: 0,
+      totalNLL: 0,
+      nextPredictions: [],     // top K predictions
+      selectedTokenIndex: null,// for token inspector highlight
+      
+      // View options
+      tableSortCol: 'index',
+      tableSortAsc: true,
+      tableFilter: '',
+      heatmapView: 'prob',     // 'prob' | 'surprise'
+      predictionsK: 8,
+      predictionsFilter: '',
+      
+      // Simulated Sandbox tokens
+      sandboxTokens: [
+        { name: 'I', prob: 0.85 },
+        { name: 'love', prob: 0.85 },
+        { name: 'Python', prob: 0.85 }
+      ]
+    };
+
+    /* --------------------------------------------------------------------------
+       DOM ELEMENT REFERENCES
+       -------------------------------------------------------------------------- */
+    const DOM = {
+      // Top Nav
+      modelStatusBadge: document.getElementById('model-status-badge'),
+      modelStatusText: document.getElementById('model-status-text'),
+      btnThemeToggle: document.getElementById('btn-theme-toggle'),
+      btnOpenSettings: document.getElementById('btn-open-settings'),
+      btnOpenInfo: document.getElementById('btn-open-info'),
+      
+      // Modals
+      modalInfo: document.getElementById('modal-info'),
+      btnCloseInfo: document.getElementById('btn-close-info'),
+      btnModalInfoOk: document.getElementById('btn-modal-info-ok'),
+      modalSettings: document.getElementById('modal-settings'),
+      btnCloseSettings: document.getElementById('btn-close-settings'),
+      btnModalSettingsSave: document.getElementById('btn-modal-settings-save'),
+      settingModelSelect: document.getElementById('setting-model-select'),
+      settingThemeSelect: document.getElementById('setting-theme-select'),
+      btnClearCache: document.getElementById('btn-clear-cache'),
+      cacheClearedMsg: document.getElementById('cache-cleared-msg'),
+      
+      // Sentence Lab
+      sentenceInput: document.getElementById('sentence-input'),
+      charCounter: document.getElementById('char-counter'),
+      wordCounter: document.getElementById('word-counter'),
+      tokenCounter: document.getElementById('token-counter'),
+      btnClearSentence: document.getElementById('btn-clear-sentence'),
+      btnResetSentence: document.getElementById('btn-reset-sentence'),
+      btnAnalyze: document.getElementById('btn-analyze'),
+      sampleButtons: document.querySelectorAll('.sample-btn[data-sentence]'),
+      
+      // Model Progress Card
+      modelProgressCard: document.getElementById('model-progress-card'),
+      progressPhaseLabel: document.getElementById('progress-phase-label'),
+      progressPercentageLabel: document.getElementById('progress-percentage-label'),
+      progressFillBar: document.getElementById('progress-fill-bar'),
+      progressDetailText: document.getElementById('progress-detail-text'),
+      
+      // Tokenization
+      tokenChipsWrapper: document.getElementById('token-chips-wrapper'),
+      tokenInspector: document.getElementById('token-inspector'),
+      btnCloseInspector: document.getElementById('btn-close-inspector'),
+      inspectTokenName: document.getElementById('inspect-token-name'),
+      inspectTokenId: document.getElementById('inspect-token-id'),
+      inspectTokenPos: document.getElementById('inspect-token-pos'),
+      inspectTokenProb: document.getElementById('inspect-token-prob'),
+      inspectTokenNLL: document.getElementById('inspect-token-nll'),
+      inspectTokenBits: document.getElementById('inspect-token-bits'),
+      inspectTokenInv: document.getElementById('inspect-token-inv'),
+      inspectExplanation: document.getElementById('inspect-explanation'),
+      
+      // Perplexity Card
+      statPerplexityNumber: document.getElementById('stat-perplexity-number'),
+      statPerplexityBadge: document.getElementById('stat-perplexity-badge'),
+      statAvgNLL: document.getElementById('stat-avg-nll'),
+      statNumTokens: document.getElementById('stat-num-tokens'),
+      statTotalNLL: document.getElementById('stat-total-nll'),
+      statBitsToken: document.getElementById('stat-bits-token'),
+      step1Details: document.getElementById('step-1-details'),
+      step2Details: document.getElementById('step-2-details'),
+      step3Details: document.getElementById('step-3-details'),
+      
+      // Table
+      tableSearchInput: document.getElementById('table-search-input'),
+      toggleAdvancedColumns: document.getElementById('toggle-advanced-columns'),
+      tokensProbTable: document.getElementById('tokens-prob-table'),
+      tokensTableTbody: document.getElementById('tokens-table-tbody'),
+      tableHeaders: document.querySelectorAll('#tokens-prob-table th[data-sort]'),
+      
+      // Heatmap
+      btnViewProb: document.getElementById('btn-view-prob'),
+      btnViewSurprise: document.getElementById('btn-view-surprise'),
+      heatmapCellsWrapper: document.getElementById('heatmap-cells-wrapper'),
+      heatmapLegendBar: document.getElementById('heatmap-legend-bar'),
+      legendLowLabel: document.getElementById('legend-low-label'),
+      legendHighLabel: document.getElementById('legend-high-label'),
+      
+      // Predictions
+      predictionsKSelect: document.getElementById('predictions-k-select'),
+      predictionsSearchInput: document.getElementById('predictions-search-input'),
+      predictionsListContainer: document.getElementById('predictions-list-container'),
+      
+      // Generation
+      inputMaxTokens: document.getElementById('input-max-tokens'),
+      valMaxTokens: document.getElementById('val-max-tokens'),
+      inputTemperature: document.getElementById('input-temperature'),
+      valTemperature: document.getElementById('val-temperature'),
+      inputTopK: document.getElementById('input-top-k'),
+      valTopK: document.getElementById('val-top-k'),
+      inputTopP: document.getElementById('input-top-p'),
+      valTopP: document.getElementById('val-top-p'),
+      inputRepPenalty: document.getElementById('input-rep-penalty'),
+      valRepPenalty: document.getElementById('val-rep-penalty'),
+      genOriginalText: document.getElementById('gen-original-text'),
+      genStreamText: document.getElementById('gen-stream-text'),
+      genCursor: document.getElementById('gen-cursor'),
+      btnStartGeneration: document.getElementById('btn-start-generation'),
+      btnStopGeneration: document.getElementById('btn-stop-generation'),
+      btnUseGenerated: document.getElementById('btn-use-generated'),
+      
+      // Sandbox
+      sandboxErrorBanner: document.getElementById('sandbox-error-banner'),
+      sandboxRowsContainer: document.getElementById('sandbox-rows-container'),
+      btnSandboxAddToken: document.getElementById('btn-sandbox-add-token'),
+      btnSandboxClearAll: document.getElementById('btn-sandbox-clear-all'),
+      btnSandboxReset: document.getElementById('btn-sandbox-reset'),
+      sandboxPerplexityScore: document.getElementById('sandbox-perplexity-score'),
+      sandboxAvgNLL: document.getElementById('sandbox-avg-nll'),
+      sandboxTokenCount: document.getElementById('sandbox-token-count'),
+      sandboxFormulaPreview: document.getElementById('sandbox-formula-preview'),
+      sandboxPresetButtons: document.querySelectorAll('.sample-btn[data-preset]'),
+      
+      // Sidebar
+      sideModelName: document.getElementById('side-model-name'),
+      sideQuantization: document.getElementById('side-quantization'),
+      sideRuntime: document.getElementById('side-runtime'),
+      sideCharCount: document.getElementById('side-char-count'),
+      sideWordCount: document.getElementById('side-word-count'),
+      sideTokenCount: document.getElementById('side-token-count'),
+      sideCompressionRatio: document.getElementById('side-compression-ratio'),
+      sideAvgBits: document.getElementById('side-avg-bits'),
+      sideMaxSurpriseToken: document.getElementById('side-max-surprise-token')
+    };
+
+    /* --------------------------------------------------------------------------
+       STATUS BADGE MANAGEMENT
+       -------------------------------------------------------------------------- */
+    function setModelStatus(text, type = 'idle') {
+      DOM.modelStatusText.textContent = text;
+      DOM.modelStatusBadge.className = 'status-badge';
+      if (type === 'ready') DOM.modelStatusBadge.classList.add('ready');
+      else if (type === 'working') DOM.modelStatusBadge.classList.add('working');
+      else if (type === 'error') DOM.modelStatusBadge.classList.add('error');
+    }
+
+    /* --------------------------------------------------------------------------
+       NUMERICAL STABILITY & PROBABILITY MATHEMATICS
+       -------------------------------------------------------------------------- */
+
+    /**
+     * Computes log-softmax and probability for a target token given logits slice.
+     * Uses numerically stable formula: ln(P(t)) = (L[t] - max(L)) - ln(sum(exp(L[j] - max(L))))
+     */
+    function computeTokenMetrics(logitsSlice, vocabSize, targetId) {
+      let maxLogit = -Infinity;
+      for (let j = 0; j < vocabSize; j++) {
+        const val = logitsSlice[j];
+        if (val > maxLogit) maxLogit = val;
+      }
+
+      let sumExp = 0;
+      for (let j = 0; j < vocabSize; j++) {
+        sumExp += Math.exp(logitsSlice[j] - maxLogit);
+      }
+
+      const targetLogit = logitsSlice[targetId];
+      // Stable log-probability in nats
+      const logProb = (targetLogit - maxLogit) - Math.log(sumExp);
+      const prob = Math.exp(logProb);
+      const nll = -logProb; // Negative Log-Likelihood (nats)
+      const surpriseBits = nll / Math.LN2; // bits (-log2(P))
+      const invProb = prob > 0 ? (1 / prob) : Infinity;
+
+      return {
+        targetId,
+        targetLogit,
+        maxLogit,
+        sumExp,
+        logProb,
+        prob,
+        nll,
+        surpriseBits,
+        invProb
+      };
+    }
+
+    /**
+     * Extracts top K predictions from a logits slice.
+     */
+    function extractTopKPredictions(logitsSlice, vocabSize, k = 8) {
+      let maxLogit = -Infinity;
+      for (let j = 0; j < vocabSize; j++) {
+        if (logitsSlice[j] > maxLogit) maxLogit = logitsSlice[j];
+      }
+
+      let sumExp = 0;
+      for (let j = 0; j < vocabSize; j++) {
+        sumExp += Math.exp(logitsSlice[j] - maxLogit);
+      }
+
+      // Collect candidates
+      const candidates = [];
+      for (let j = 0; j < vocabSize; j++) {
+        candidates.push({ id: j, logit: logitsSlice[j] });
+      }
+
+      // Sort descending by logit
+      candidates.sort((a, b) => b.logit - a.logit);
+
+      const topCandidates = candidates.slice(0, Math.min(k, 100)).map((item, index) => {
+        const logProb = (item.logit - maxLogit) - Math.log(sumExp);
+        const prob = Math.exp(logProb);
+        let decoded = state.tokenizer ? state.tokenizer.decode([item.id]) : `Token ${item.id}`;
+        // Make spaces visible
+        const displayText = formatTokenText(decoded);
+
+        return {
+          rank: index + 1,
+          id: item.id,
+          rawText: decoded,
+          displayText: displayText,
+          logit: item.logit,
+          prob: prob,
+          percentage: (prob * 100).toFixed(2)
+        };
+      });
+
+      return {
+        topCandidates,
+        maxLogit,
+        sumExp
+      };
+    }
+
+    /**
+     * Formats token text for display, replacing spaces with visible space glyph ␣
+     */
+    function formatTokenText(text) {
+      if (!text) return '␣';
+      // Replace leading/trailing or embedded space with ␣ for visual clarity
+      return text
+        .replace(/ /g, '␣')
+        .replace(/\n/g, '↵')
+        .replace(/\t/g, '⇥');
+    }
+
+    /**
+     * Categorizes a token for coloring
+     */
+    function getTokenCategory(id, text) {
+      if (id === 50256 || (text.startsWith('<|') && text.endsWith('|>'))) {
+        return 'cat-special';
+      }
+      if (text.includes(' ') || text.includes('␣') || text.includes('\n')) {
+        return 'cat-space';
+      }
+      if (/^[.,!?;:'"()\[\]{}\-—]+$/.test(text.trim())) {
+        return 'cat-punct';
+      }
+      return 'cat-word';
+    }
+
+    /* --------------------------------------------------------------------------
+       MODEL LOADING (TRANSFORMERS.JS)
+       -------------------------------------------------------------------------- */
+    async function ensureModelLoaded() {
+      if (state.model && state.tokenizer) {
+        return { model: state.model, tokenizer: state.tokenizer };
+      }
+
+      state.isLoadingModel = true;
+      setModelStatus('Downloading model...', 'working');
+      DOM.modelProgressCard.classList.add('active');
+      DOM.progressFillBar.classList.remove('indeterminate');
+      DOM.btnAnalyze.disabled = true;
+
+      const progressCallback = (p) => {
+        if (!p) return;
+        if (p.status === 'initiate') {
+          DOM.progressPhaseLabel.textContent = `Initiating ${p.file || 'download'}...`;
+          DOM.progressDetailText.textContent = `Connecting to Hugging Face Hub for ${p.name || state.modelId}`;
+        } else if (p.status === 'progress') {
+          const pct = p.progress ? Math.round(p.progress) : 0;
+          DOM.progressPhaseLabel.textContent = `Downloading ${p.file || 'model files'}...`;
+          DOM.progressPercentageLabel.textContent = `${pct}%`;
+          DOM.progressFillBar.style.width = `${pct}%`;
+
+          if (p.loaded && p.total) {
+            const loadedMB = (p.loaded / 1048576).toFixed(1);
+            const totalMB = (p.total / 1048576).toFixed(1);
+            DOM.progressDetailText.textContent = `Downloaded ${loadedMB} MB / ${totalMB} MB (${pct}%)`;
+          }
+        } else if (p.status === 'done') {
+          DOM.progressPhaseLabel.textContent = `Loaded ${p.file || 'component'}`;
+        } else if (p.status === 'ready') {
+          DOM.progressPhaseLabel.textContent = 'Initializing model into memory...';
+          DOM.progressFillBar.classList.add('indeterminate');
+        }
+      };
+
+      try {
+        // Step 1: Download tokenizer
+        DOM.progressPhaseLabel.textContent = 'Downloading tokenizer...';
+        state.tokenizer = await AutoTokenizer.from_pretrained(state.modelId, {
+          progress_callback: progressCallback
+        });
+
+        // Step 2: Download Model with q8 quantization
+        DOM.progressPhaseLabel.textContent = 'Downloading DistilGPT-2 model (q8 quantized)...';
+        try {
+          state.model = await AutoModelForCausalLM.from_pretrained(state.modelId, {
+            dtype: 'q8',
+            device: 'wasm',
+            progress_callback: progressCallback
+          });
+        } catch (dtypeErr) {
+          console.warn('Fallback to standard loading:', dtypeErr);
+          state.model = await AutoModelForCausalLM.from_pretrained(state.modelId, {
+            progress_callback: progressCallback
+          });
+        }
+
+        state.isModelReady = true;
+        state.isLoadingModel = false;
+        setModelStatus('Model ready (cached)', 'ready');
+        DOM.modelProgressCard.classList.remove('active');
+        DOM.btnAnalyze.disabled = false;
+
+        return { model: state.model, tokenizer: state.tokenizer };
+      } catch (err) {
+        state.isLoadingModel = false;
+        setModelStatus('Loading error', 'error');
+        DOM.progressPhaseLabel.textContent = 'Failed to load model';
+        DOM.progressDetailText.textContent = err.message || 'Network error while downloading from Hugging Face.';
+        DOM.btnAnalyze.disabled = false;
+        throw err;
+      }
+    }
+
+    /* --------------------------------------------------------------------------
+       ANALYSIS PIPELINE
+       -------------------------------------------------------------------------- */
+    async function runAnalysis() {
+      const sentence = DOM.sentenceInput.value.trim();
+      if (!sentence) {
+        alert('Please enter a sentence in the Sentence Lab textarea.');
+        return;
+      }
+
+      state.isAnalyzing = true;
+      state.rawSentence = sentence;
+      DOM.btnAnalyze.disabled = true;
+      setModelStatus('Analyzing sentence...', 'working');
+
+      try {
+        // 1. Ensure Model is ready
+        const { model, tokenizer } = await ensureModelLoaded();
+
+        // 2. Tokenize sentence using real tokenizer
+        const encoded = await tokenizer(sentence, { return_tensor: false });
+        const sentenceTokenIds = Array.isArray(encoded.input_ids)
+          ? encoded.input_ids
+          : Array.from(encoded.input_ids.data).map(Number);
+
+        if (sentenceTokenIds.length === 0) {
+          throw new Error('Tokenizer returned 0 tokens for the sentence.');
+        }
+
+        const N = sentenceTokenIds.length;
+
+        // 3. Construct input sequence with token 50256 prepended as educational context prefix
+        // Token IDs: [50256] followed by encoded sentence tokens
+        const fullTokenIds = [50256, ...sentenceTokenIds];
+        state.fullTokenIds = fullTokenIds;
+
+        const seqLen = fullTokenIds.length;
+        const inputTensor = new Tensor(
+          'int64',
+          BigInt64Array.from(fullTokenIds.map(BigInt)),
+          [1, seqLen]
+        );
+        const maskTensor = new Tensor(
+          'int64',
+          BigInt64Array.from(fullTokenIds.map(() => 1n)),
+          [1, seqLen]
+        );
+
+        // 4. Run real model inference once over the complete token sequence
+        const startTime = performance.now();
+        const outputs = await model({ input_ids: inputTensor, attention_mask: maskTensor });
+        const elapsed = (performance.now() - startTime).toFixed(1);
+
+        const logits = outputs.logits;
+        const vocabSize = logits.dims[2] || 50257;
+        state.vocabSize = vocabSize;
+        const logitsData = logits.data;
+
+        // 5. Compute token probabilities and negative log likelihoods
+        // For token t_i at index i (0 to N-1), logits predicting it are at position i (preceded by [50256, t_1...])
+        let totalNLL = 0;
+        const sentenceTokens = [];
+
+        for (let i = 0; i < N; i++) {
+          const targetId = sentenceTokenIds[i];
+          const pos = i; // logits at sequence position i predict token at position i+1
+          const offset = pos * vocabSize;
+          const logitsSlice = logitsData.subarray(offset, offset + vocabSize);
+
+          const metrics = computeTokenMetrics(logitsSlice, vocabSize, targetId);
+          totalNLL += metrics.nll;
+
+          // Decode token text
+          const rawText = tokenizer.decode([targetId]);
+          const displayText = formatTokenText(rawText);
+          const category = getTokenCategory(targetId, rawText);
+
+          sentenceTokens.push({
+            index: i + 1,
+            tokenId: targetId,
+            rawText,
+            displayText,
+            category,
+            ...metrics
+          });
+        }
+
+        state.sentenceTokens = sentenceTokens;
+        state.totalNLL = totalNLL;
+        state.avgNLL = totalNLL / N;
+        // Calculate perplexity using logarithms to prevent arithmetic overflow:
+        // perplexity = exp(average(-ln(P)))
+        state.perplexity = Math.exp(state.avgNLL);
+
+        // 6. Next-token predictions at final position (offset = N * vocabSize)
+        const finalOffset = N * vocabSize;
+        const finalLogitsSlice = logitsData.subarray(finalOffset, finalOffset + vocabSize);
+        const topPredResult = extractTopKPredictions(finalLogitsSlice, vocabSize, 50);
+        state.nextPredictions = topPredResult.topCandidates;
+
+        // 7. Render all visualizations
+        renderTokenChips();
+        renderPerplexityScore();
+        renderProbabilityTable();
+        renderHeatmap();
+        renderNextPredictions();
+        updateSidebarStats();
+
+        // 8. Auto-inspect first token
+        if (sentenceTokens.length > 0) {
+          inspectToken(1);
+        }
+
+        setModelStatus(`Analysis complete (${elapsed}ms)`, 'ready');
+      } catch (err) {
+        console.error('Inference error:', err);
+        setModelStatus('Analysis failed', 'error');
+        alert(`Error during model inference: ${err.message}`);
+      } finally {
+        state.isAnalyzing = false;
+        DOM.btnAnalyze.disabled = false;
+      }
+    }
+
+    /* --------------------------------------------------------------------------
+       RENDERING: TOKEN CHIPS & INSPECTOR
+       -------------------------------------------------------------------------- */
+    function renderTokenChips() {
+      DOM.tokenChipsWrapper.innerHTML = '';
+
+      // Render Prefix Token Chip (50256)
+      const prefixChip = document.createElement('div');
+      prefixChip.className = 'token-chip cat-special';
+      prefixChip.title = 'Start-of-Sequence Context Prefix (50256)';
+      prefixChip.innerHTML = `
+        <span class="token-idx">CTX</span>
+        <span>&lt;|endoftext|&gt;</span>
+        <span class="token-id-tag">50256</span>
+      `;
+      prefixChip.addEventListener('click', () => {
+        showPrefixInspector();
+      });
+      DOM.tokenChipsWrapper.appendChild(prefixChip);
+
+      // Render sentence tokens
+      state.sentenceTokens.forEach((t) => {
+        const chip = document.createElement('div');
+        chip.className = `token-chip ${t.category}`;
+        if (state.selectedTokenIndex === t.index) {
+          chip.classList.add('selected');
+        }
+        chip.dataset.index = t.index;
+        chip.innerHTML = `
+          <span class="token-idx">${t.index}</span>
+          <span>${escapeHTML(t.displayText)}</span>
+          <span class="token-id-tag">${t.tokenId}</span>
+        `;
+        chip.addEventListener('click', () => {
+          inspectToken(t.index);
+        });
+        DOM.tokenChipsWrapper.appendChild(chip);
+      });
+    }
+
+    function inspectToken(index) {
+      state.selectedTokenIndex = index;
+
+      // Update chip selections
+      document.querySelectorAll('.token-chip').forEach(c => {
+        if (c.dataset.index == index) c.classList.add('selected');
+        else c.classList.remove('selected');
+      });
+
+      // Update table selections
+      document.querySelectorAll('#tokens-table-tbody tr').forEach(r => {
+        if (r.dataset.index == index) r.classList.add('selected');
+        else r.classList.remove('selected');
+      });
+
+      const t = state.sentenceTokens.find(item => item.index === index);
+      if (!t) return;
+
+      DOM.tokenInspector.classList.add('active');
+      DOM.inspectTokenName.textContent = `"${t.displayText}" (${t.category.replace('cat-', '')})`;
+      DOM.inspectTokenId.textContent = t.tokenId;
+      DOM.inspectTokenPos.textContent = `Token #${t.index} of ${state.sentenceTokens.length}`;
+      DOM.inspectTokenProb.textContent = formatProb(t.prob);
+      DOM.inspectTokenNLL.textContent = `${t.nll.toFixed(3)} nats`;
+      DOM.inspectTokenBits.textContent = `${t.surpriseBits.toFixed(2)} bits`;
+      DOM.inspectTokenInv.textContent = t.invProb < 1e6 ? t.invProb.toFixed(1) : t.invProb.toExponential(2);
+
+      // Educational explanation
+      let certDesc = '';
+      if (t.prob > 0.5) certDesc = 'Very high confidence continuation (low surprise).';
+      else if (t.prob > 0.1) certDesc = 'Moderate probability continuation.';
+      else if (t.prob > 0.01) certDesc = 'Somewhat surprising token for the model.';
+      else certDesc = 'Highly surprising / unexpected token in this context.';
+
+      DOM.inspectExplanation.innerHTML = `
+        <strong>Model Expectation:</strong> ${certDesc} Negative log-likelihood (-ln P) represents the information surprise in nats.
+      `;
+    }
+
+    function showPrefixInspector() {
+      DOM.tokenInspector.classList.add('active');
+      DOM.inspectTokenName.textContent = '"<|endoftext|>" (Context Prefix)';
+      DOM.inspectTokenId.textContent = '50256';
+      DOM.inspectTokenPos.textContent = 'Context Anchor (Not counted in N)';
+      DOM.inspectTokenProb.textContent = 'Prior (100%)';
+      DOM.inspectTokenNLL.textContent = '0.000 nats';
+      DOM.inspectTokenBits.textContent = '0.00 bits';
+      DOM.inspectTokenInv.textContent = '1.0';
+      DOM.inspectExplanation.innerHTML = `
+        <strong>Start Context:</strong> Token 50256 is the GPT-2 BOS/EOS token prepended so the model has prior context to evaluate the very first token of the sentence.
+      `;
+    }
+
+    /* --------------------------------------------------------------------------
+       RENDERING: PERPLEXITY RESULTS & FORMULAS
+       -------------------------------------------------------------------------- */
+    function renderPerplexityScore() {
+      const ppl = state.perplexity;
+      DOM.statPerplexityNumber.textContent = ppl < 10000 ? ppl.toFixed(2) : ppl.toExponential(2);
+
+      // Rating badge
+      let badgeText = 'Moderate Perplexity';
+      let badgeStyle = 'background: rgba(34, 211, 238, 0.12); color: var(--cyan); border-color: rgba(34, 211, 238, 0.3);';
+      if (ppl < 15) {
+        badgeText = 'Very Predictable (Fluent)';
+        badgeStyle = 'background: rgba(163, 230, 53, 0.12); color: var(--success); border-color: rgba(163, 230, 53, 0.3);';
+      } else if (ppl < 100) {
+        badgeText = 'Typical Natural Language';
+        badgeStyle = 'background: rgba(34, 211, 238, 0.12); color: var(--cyan); border-color: rgba(34, 211, 238, 0.3);';
+      } else if (ppl < 800) {
+        badgeText = 'High Perplexity (Unlikely Phrasing)';
+        badgeStyle = 'background: rgba(251, 191, 36, 0.12); color: var(--warning); border-color: rgba(251, 191, 36, 0.3);';
+      } else {
+        badgeText = 'Extremely Surprising / Scrambled';
+        badgeStyle = 'background: rgba(251, 113, 133, 0.15); color: var(--error); border-color: rgba(251, 113, 133, 0.3);';
+      }
+
+      DOM.statPerplexityBadge.textContent = badgeText;
+      DOM.statPerplexityBadge.setAttribute('style', badgeStyle);
+
+      // Supporting metrics
+      DOM.statAvgNLL.textContent = `${state.avgNLL.toFixed(3)} nats`;
+      DOM.statNumTokens.textContent = state.sentenceTokens.length;
+      DOM.statTotalNLL.textContent = `${state.totalNLL.toFixed(3)} nats`;
+      DOM.statBitsToken.textContent = `${(state.avgNLL / Math.LN2).toFixed(2)} bits`;
+
+      // 3-step breakdown formulas
+      const surprisesStr = state.sentenceTokens.map(t => `${t.nll.toFixed(2)}`).join(' + ');
+      DOM.step1Details.textContent = `Surprises: [ ${surprisesStr} ]`;
+      DOM.step2Details.textContent = `Average NLL = (${state.totalNLL.toFixed(3)}) / ${state.sentenceTokens.length} = ${state.avgNLL.toFixed(3)} nats/token`;
+      DOM.step3Details.textContent = `Perplexity = exp(${state.avgNLL.toFixed(3)}) = ${state.perplexity.toFixed(2)}`;
+    }
+
+    /* --------------------------------------------------------------------------
+       RENDERING: PROBABILITY TABLE
+       -------------------------------------------------------------------------- */
+    function renderProbabilityTable() {
+      let tokens = [...state.sentenceTokens];
+
+      // Filter
+      if (state.tableFilter) {
+        const q = state.tableFilter.toLowerCase();
+        tokens = tokens.filter(t => 
+          t.rawText.toLowerCase().includes(q) || 
+          t.displayText.toLowerCase().includes(q) ||
+          String(t.tokenId).includes(q)
+        );
+      }
+
+      // Sort
+      tokens.sort((a, b) => {
+        let valA = a[state.tableSortCol];
+        let valB = b[state.tableSortCol];
+        if (state.tableSortCol === 'token') {
+          valA = a.rawText.toLowerCase();
+          valB = b.rawText.toLowerCase();
+        } else if (state.tableSortCol === 'id') {
+          valA = a.tokenId;
+          valB = b.tokenId;
+        } else if (state.tableSortCol === 'pct') {
+          valA = a.prob;
+          valB = b.prob;
+        } else if (state.tableSortCol === 'inv') {
+          valA = a.invProb;
+          valB = b.invProb;
+        } else if (state.tableSortCol === 'logit') {
+          valA = a.targetLogit;
+          valB = b.targetLogit;
+        } else if (state.tableSortCol === 'bits') {
+          valA = a.surpriseBits;
+          valB = b.surpriseBits;
+        }
+
+        if (valA < valB) return state.tableSortAsc ? -1 : 1;
+        if (valA > valB) return state.tableSortAsc ? 1 : -1;
+        return 0;
+      });
+
+      DOM.tokensTableTbody.innerHTML = '';
+      if (tokens.length === 0) {
+        DOM.tokensTableTbody.innerHTML = `<tr><td colspan="9" style="text-align:center; color:var(--text-muted); padding:20px;">No matching tokens found</td></tr>`;
+        return;
+      }
+
+      tokens.forEach(t => {
+        const tr = document.createElement('tr');
+        tr.dataset.index = t.index;
+        if (state.selectedTokenIndex === t.index) {
+          tr.classList.add('selected');
+        }
+
+        const pct = (t.prob * 100).toFixed(2) + '%';
+        const invFormatted = t.invProb < 1e5 ? t.invProb.toFixed(1) : t.invProb.toExponential(2);
+        const logitFormatted = t.targetLogit.toFixed(2);
+        const bitsFormatted = t.surpriseBits.toFixed(2);
+
+        tr.innerHTML = `
+          <td>${t.index}</td>
+          <td><span class="cell-token">${escapeHTML(t.displayText)}</span></td>
+          <td>${t.tokenId}</td>
+          <td>${formatProb(t.prob)}</td>
+          <td>${pct}</td>
+          <td>${t.nll.toFixed(3)}</td>
+          <td>${invFormatted}</td>
+          <td class="advanced-col">${logitFormatted}</td>
+          <td class="advanced-col">${bitsFormatted}</td>
+        `;
+
+        tr.addEventListener('click', () => {
+          inspectToken(t.index);
+        });
+
+        DOM.tokensTableTbody.appendChild(tr);
+      });
+    }
+
+    /* --------------------------------------------------------------------------
+       RENDERING: TOKEN HEATMAP
+       -------------------------------------------------------------------------- */
+    function renderHeatmap() {
+      DOM.heatmapCellsWrapper.innerHTML = '';
+
+      if (state.sentenceTokens.length === 0) return;
+
+      const isProbView = state.heatmapView === 'prob';
+
+      state.sentenceTokens.forEach(t => {
+        const cell = document.createElement('div');
+        cell.className = 'heatmap-cell';
+        cell.dataset.index = t.index;
+
+        if (isProbView) {
+          // Probability scale: 0 to 1
+          const alpha = Math.min(Math.max(t.prob, 0.08), 0.95);
+          cell.style.background = `rgba(34, 211, 238, ${alpha})`;
+          cell.style.color = alpha > 0.4 ? '#04101A' : 'var(--text-main)';
+          cell.title = `Token: "${t.displayText}" | Probability: ${(t.prob * 100).toFixed(2)}% | P = ${formatProb(t.prob)}`;
+        } else {
+          // Surprise scale: 0 nats to ~12 nats
+          const normSurprise = Math.min(t.nll / 10, 1.0);
+          const alpha = Math.min(Math.max(normSurprise, 0.12), 0.95);
+          cell.style.background = `rgba(244, 114, 182, ${alpha})`;
+          cell.style.color = alpha > 0.5 ? '#1C0612' : 'var(--text-main)';
+          cell.title = `Token: "${t.displayText}" | Surprise: ${t.nll.toFixed(3)} nats (${t.surpriseBits.toFixed(2)} bits)`;
+        }
+
+        cell.textContent = t.displayText;
+
+        cell.addEventListener('click', () => {
+          inspectToken(t.index);
+        });
+
+        DOM.heatmapCellsWrapper.appendChild(cell);
+      });
+
+      // Update legend labels
+      if (isProbView) {
+        DOM.heatmapLegendBar.className = 'legend-bar prob-scale';
+        DOM.legendLowLabel.textContent = 'Low Prob (0%)';
+        DOM.legendHighLabel.textContent = 'High Prob (100%)';
+      } else {
+        DOM.heatmapLegendBar.className = 'legend-bar surprise-scale';
+        DOM.legendLowLabel.textContent = 'Low Surprise (Predictable)';
+        DOM.legendHighLabel.textContent = 'High Surprise (Unexpected)';
+      }
+    }
+
+    /* --------------------------------------------------------------------------
+       RENDERING: NEXT-TOKEN PREDICTIONS
+       -------------------------------------------------------------------------- */
+    function renderNextPredictions() {
+      let preds = [...state.nextPredictions];
+      const k = parseInt(DOM.predictionsKSelect.value, 10) || 8;
+      preds = preds.slice(0, k);
+
+      if (state.predictionsFilter) {
+        const q = state.predictionsFilter.toLowerCase();
+        preds = preds.filter(p => 
+          p.rawText.toLowerCase().includes(q) || 
+          p.displayText.toLowerCase().includes(q) ||
+          String(p.id).includes(q)
+        );
+      }
+
+      DOM.predictionsListContainer.innerHTML = '';
+      if (preds.length === 0) {
+        DOM.predictionsListContainer.innerHTML = `
+          <div style="text-align:center; color:var(--text-muted); padding:20px;">
+            No predictions match the filter.
+          </div>
+        `;
+        return;
+      }
+
+      preds.forEach((item, index) => {
+        const div = document.createElement('div');
+        div.className = `prediction-item ${item.rank === 1 ? 'top-pick' : ''}`;
+
+        div.innerHTML = `
+          <span class="pred-rank">#${item.rank}</span>
+          <span class="pred-token-name">${escapeHTML(item.displayText)}</span>
+          <div class="pred-bar-wrapper">
+            <div class="pred-bar-fill" style="width: ${Math.max(item.prob * 100, 2)}%;"></div>
+          </div>
+          <span class="pred-prob-val">${item.percentage}%</span>
+          <div class="pred-actions">
+            <button class="btn btn-secondary btn-sm btn-append-token" title="Append '${item.rawText}' to sentence">
+              + Append
+            </button>
+          </div>
+        `;
+
+        // Append button handler
+        div.querySelector('.btn-append-token').addEventListener('click', (e) => {
+          e.stopPropagation();
+          appendPredictedToken(item.rawText);
+        });
+
+        DOM.predictionsListContainer.appendChild(div);
+      });
+    }
+
+    function appendPredictedToken(text) {
+      DOM.sentenceInput.value += text;
+      updateInputCounters();
+      runAnalysis();
+    }
+
+    /* --------------------------------------------------------------------------
+       AUTOREGRESSIVE TEXT GENERATION ("CONTINUE THE SENTENCE")
+       -------------------------------------------------------------------------- */
+    async function startAutoregressiveGeneration() {
+      if (state.isGenerating) return;
+
+      const sentence = DOM.sentenceInput.value.trim();
+      if (!sentence) {
+        alert('Please enter a base sentence first.');
+        return;
+      }
+
+      // Ensure model is ready
+      const { model, tokenizer } = await ensureModelLoaded();
+
+      state.isGenerating = true;
+      state.abortGeneration = false;
+      DOM.btnStartGeneration.disabled = true;
+      DOM.btnStopGeneration.disabled = false;
+      DOM.btnUseGenerated.disabled = true;
+      DOM.genCursor.style.display = 'inline-block';
+      DOM.genOriginalText.textContent = sentence;
+      DOM.genStreamText.textContent = '';
+      setModelStatus('Generating continuation...', 'working');
+
+      // Hyperparameters
+      const maxNewTokens = parseInt(DOM.inputMaxTokens.value, 10) || 20;
+      const temperature = parseFloat(DOM.inputTemperature.value);
+      const topK = parseInt(DOM.inputTopK.value, 10);
+      const topP = parseFloat(DOM.inputTopP.value);
+      const repPenalty = parseFloat(DOM.inputRepPenalty.value);
+
+      // Tokenize starting context
+      const encoded = await tokenizer(sentence, { return_tensor: false });
+      let currentSequence = Array.isArray(encoded.input_ids)
+        ? [...encoded.input_ids]
+        : Array.from(encoded.input_ids.data).map(Number);
+
+      const generatedTokens = [];
+
+      try {
+        for (let step = 0; step < maxNewTokens; step++) {
+          if (state.abortGeneration) break;
+
+          // Build input tensor with [50256, ...currentSequence]
+          const inputIds = [50256, ...currentSequence];
+          const inputTensor = new Tensor(
+            'int64',
+            BigInt64Array.from(inputIds.map(BigInt)),
+            [1, inputIds.length]
+          );
+          const maskTensor = new Tensor(
+            'int64',
+            BigInt64Array.from(inputIds.map(() => 1n)),
+            [1, inputIds.length]
+          );
+
+          const out = await model({ input_ids: inputTensor, attention_mask: maskTensor });
+          const logitsData = out.logits.data;
+          const vocabSize = out.logits.dims[2] || 50257;
+
+          // Last position logits
+          const lastPos = inputIds.length - 1;
+          const lastOffset = lastPos * vocabSize;
+          const rawSlice = logitsData.subarray(lastOffset, lastOffset + vocabSize);
+
+          // Copy slice to apply sampling transforms
+          const logitsCopy = new Float32Array(rawSlice);
+
+          // Repetition Penalty
+          if (repPenalty !== 1.0) {
+            const seen = new Set(currentSequence);
+            for (const id of seen) {
+              if (logitsCopy[id] > 0) {
+                logitsCopy[id] /= repPenalty;
+              } else {
+                logitsCopy[id] *= repPenalty;
+              }
+            }
+          }
+
+          let nextTokenId;
+
+          // Temperature & Sampling
+          if (temperature === 0.0) {
+            // Greedy argmax
+            let maxL = -Infinity;
+            let bestId = 0;
+            for (let j = 0; j < vocabSize; j++) {
+              if (logitsCopy[j] > maxL) {
+                maxL = logitsCopy[j];
+                bestId = j;
+              }
+            }
+            nextTokenId = bestId;
+          } else {
+            // Scale by temperature
+            for (let j = 0; j < vocabSize; j++) {
+              logitsCopy[j] /= temperature;
+            }
+            nextTokenId = sampleWithTopKTopP(logitsCopy, vocabSize, topK, topP);
+          }
+
+          // EOS check
+          if (nextTokenId === 50256) {
+            break;
+          }
+
+          currentSequence.push(nextTokenId);
+          generatedTokens.push(nextTokenId);
+
+          // Decode and update stream display
+          const decodedAllGenerated = tokenizer.decode(generatedTokens);
+          DOM.genStreamText.textContent = decodedAllGenerated;
+
+          // Yield to UI loop
+          await new Promise(r => setTimeout(r, 16));
+        }
+
+        setModelStatus('Generation complete', 'ready');
+        DOM.btnUseGenerated.disabled = false;
+      } catch (err) {
+        console.error('Generation error:', err);
+        setModelStatus('Generation error', 'error');
+      } finally {
+        state.isGenerating = false;
+        DOM.btnStartGeneration.disabled = false;
+        DOM.btnStopGeneration.disabled = true;
+        DOM.genCursor.style.display = 'none';
+      }
+    }
+
+    /**
+     * Top-K & Top-P Nucleus Sampling
+     */
+    function sampleWithTopKTopP(logits, vocabSize, topK, topP) {
+      // Find max logit
+      let maxLogit = -Infinity;
+      for (let j = 0; j < vocabSize; j++) {
+        if (logits[j] > maxLogit) maxLogit = logits[j];
+      }
+
+      // Collect items
+      const items = [];
+      for (let j = 0; j < vocabSize; j++) {
+        items.push({ id: j, logit: logits[j] });
+      }
+
+      // Sort descending
+      items.sort((a, b) => b.logit - a.logit);
+
+      // Top-K cutoff
+      const candidates = (topK > 0 && topK < vocabSize) ? items.slice(0, topK) : items;
+
+      // Softmax over candidates
+      let sumExp = 0;
+      for (const c of candidates) {
+        c.exp = Math.exp(c.logit - maxLogit);
+        sumExp += c.exp;
+      }
+      for (const c of candidates) {
+        c.prob = c.exp / sumExp;
+      }
+
+      // Top-P Nucleus Cutoff
+      let filtered = candidates;
+      if (topP < 1.0) {
+        let cum = 0;
+        filtered = [];
+        for (const c of candidates) {
+          filtered.push(c);
+          cum += c.prob;
+          if (cum >= topP) break;
+        }
+      }
+
+      // Sample
+      let sumFiltered = 0;
+      for (const c of filtered) sumFiltered += c.prob;
+
+      const r = Math.random() * sumFiltered;
+      let running = 0;
+      for (const c of filtered) {
+        running += c.prob;
+        if (r <= running) {
+          return c.id;
+        }
+      }
+      return filtered[filtered.length - 1].id;
+    }
+
+    /* --------------------------------------------------------------------------
+       SECTION 12: PERPLEXITY SANDBOX (SIMULATED CALCULATOR)
+       -------------------------------------------------------------------------- */
+    function renderSandbox() {
+      DOM.sandboxRowsContainer.innerHTML = '';
+      DOM.sandboxErrorBanner.style.display = 'none';
+
+      let hasError = false;
+      let errorText = '';
+      let totalNLL = 0;
+      const terms = [];
+
+      state.sandboxTokens.forEach((item, index) => {
+        const p = item.prob;
+        let surprise = 0;
+
+        if (p <= 0 || p > 1) {
+          hasError = true;
+          errorText = `Token "${item.name}": Probability must be greater than 0 and less than or equal to 1.0.`;
+        } else {
+          surprise = -Math.log(p);
+          totalNLL += surprise;
+          terms.push(`-ln(${p.toFixed(3)})`);
+        }
+
+        const row = document.createElement('div');
+        row.className = 'sandbox-row-item';
+
+        row.innerHTML = `
+          <input type="text" class="sandbox-token-input" value="${escapeHTML(item.name)}" placeholder="Token name">
+          <input type="number" class="sandbox-prob-input" min="0.0001" max="1.0" step="0.01" value="${item.prob}">
+          <input type="range" class="custom-range sandbox-slider" min="0.001" max="1.0" step="0.001" value="${item.prob}">
+          <span class="sandbox-surprise-tag">${surprise.toFixed(3)} nats</span>
+          <button class="btn-delete-row" title="Remove token">✕</button>
+        `;
+
+        const nameInput = row.querySelector('.sandbox-token-input');
+        const probInput = row.querySelector('.sandbox-prob-input');
+        const sliderInput = row.querySelector('.sandbox-slider');
+        const deleteBtn = row.querySelector('.btn-delete-row');
+
+        nameInput.addEventListener('input', (e) => {
+          state.sandboxTokens[index].name = e.target.value;
+        });
+
+        probInput.addEventListener('input', (e) => {
+          const val = parseFloat(e.target.value);
+          state.sandboxTokens[index].prob = val;
+          sliderInput.value = val;
+          renderSandbox();
+        });
+
+        sliderInput.addEventListener('input', (e) => {
+          const val = parseFloat(e.target.value);
+          state.sandboxTokens[index].prob = val;
+          probInput.value = val;
+          renderSandbox();
+        });
+
+        deleteBtn.addEventListener('click', () => {
+          state.sandboxTokens.splice(index, 1);
+          renderSandbox();
+        });
+
+        DOM.sandboxRowsContainer.appendChild(row);
+      });
+
+      if (hasError) {
+        DOM.sandboxErrorBanner.textContent = errorText;
+        DOM.sandboxErrorBanner.style.display = 'block';
+        DOM.sandboxPerplexityScore.textContent = 'NaN';
+        DOM.sandboxAvgNLL.textContent = 'NaN';
+        return;
+      }
+
+      const N = state.sandboxTokens.length;
+      if (N === 0) {
+        DOM.sandboxPerplexityScore.textContent = '0.00';
+        DOM.sandboxAvgNLL.textContent = '0.000';
+        DOM.sandboxTokenCount.textContent = '0';
+        DOM.sandboxFormulaPreview.textContent = 'No tokens in sandbox. Click "+ Add Token" above.';
+        return;
+      }
+
+      const avgNLL = totalNLL / N;
+      const ppl = Math.exp(avgNLL);
+
+      DOM.sandboxPerplexityScore.textContent = ppl < 10000 ? ppl.toFixed(2) : ppl.toExponential(2);
+      DOM.sandboxAvgNLL.textContent = avgNLL.toFixed(3);
+      DOM.sandboxTokenCount.textContent = N;
+
+      const formulaString = `Perplexity = exp( ( ${terms.join(' + ')} ) / ${N} ) = exp(${avgNLL.toFixed(3)}) = ${ppl.toFixed(2)}`;
+      DOM.sandboxFormulaPreview.textContent = formulaString;
+    }
+
+    /* --------------------------------------------------------------------------
+       SIDEBAR & INPUT COUNTERS
+       -------------------------------------------------------------------------- */
+    function updateInputCounters() {
+      const text = DOM.sentenceInput.value;
+      const chars = text.length;
+      const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+      // Rough token estimate before model is loaded (~4 chars/token)
+      const estTokens = text.trim() ? Math.ceil(chars / 4) : 0;
+
+      DOM.charCounter.textContent = chars;
+      DOM.wordCounter.textContent = words;
+      DOM.tokenCounter.textContent = estTokens;
+
+      DOM.sideCharCount.textContent = chars;
+      DOM.sideWordCount.textContent = words;
+    }
+
+    function updateSidebarStats() {
+      const chars = state.rawSentence.length;
+      const words = state.rawSentence.trim() ? state.rawSentence.trim().split(/\s+/).length : 0;
+      const N = state.sentenceTokens.length;
+
+      DOM.sideCharCount.textContent = chars;
+      DOM.sideWordCount.textContent = words;
+      DOM.sideTokenCount.textContent = N;
+
+      if (N > 0) {
+        DOM.sideCompressionRatio.textContent = `${(chars / N).toFixed(2)} chars/token`;
+        DOM.sideAvgBits.textContent = `${(state.avgNLL / Math.LN2).toFixed(2)} bits/token`;
+
+        // Find max surprise token
+        let maxSurpriseToken = state.sentenceTokens[0];
+        state.sentenceTokens.forEach(t => {
+          if (t.nll > maxSurpriseToken.nll) maxSurpriseToken = t;
+        });
+        DOM.sideMaxSurpriseToken.textContent = `"${maxSurpriseToken.displayText}" (${maxSurpriseToken.nll.toFixed(2)} nats)`;
+      }
+    }
+
+    /* --------------------------------------------------------------------------
+       UTILITY HELPERS
+       -------------------------------------------------------------------------- */
+    function formatProb(p) {
+      if (p >= 0.001) {
+        return p.toFixed(4);
+      }
+      return p.toExponential(3);
+    }
+
+    function escapeHTML(str) {
+      return str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    /* --------------------------------------------------------------------------
+       EVENT LISTENERS & BINDINGS
+       -------------------------------------------------------------------------- */
+    function initEventListeners() {
+      // Input typing
+      DOM.sentenceInput.addEventListener('input', updateInputCounters);
+
+      // Analyze Button
+      DOM.btnAnalyze.addEventListener('click', runAnalysis);
+
+      // Clear & Reset Buttons
+      DOM.btnClearSentence.addEventListener('click', () => {
+        DOM.sentenceInput.value = '';
+        updateInputCounters();
+        DOM.sentenceInput.focus();
+      });
+
+      DOM.btnResetSentence.addEventListener('click', () => {
+        DOM.sentenceInput.value = 'I love Python';
+        updateInputCounters();
+      });
+
+      // Sample Sentences
+      DOM.sampleButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          DOM.sentenceInput.value = btn.dataset.sentence;
+          updateInputCounters();
+          runAnalysis();
+        });
+      });
+
+      // Close Inspector
+      DOM.btnCloseInspector.addEventListener('click', () => {
+        DOM.tokenInspector.classList.remove('active');
+        state.selectedTokenIndex = null;
+        document.querySelectorAll('.token-chip').forEach(c => c.classList.remove('selected'));
+        document.querySelectorAll('#tokens-table-tbody tr').forEach(r => r.classList.remove('selected'));
+      });
+
+      // Table Search Filter
+      DOM.tableSearchInput.addEventListener('input', (e) => {
+        state.tableFilter = e.target.value;
+        renderProbabilityTable();
+      });
+
+      // Toggle Advanced Columns
+      DOM.toggleAdvancedColumns.addEventListener('change', (e) => {
+        if (e.target.checked) {
+          DOM.tokensProbTable.classList.add('show-advanced');
+        } else {
+          DOM.tokensProbTable.classList.remove('show-advanced');
+        }
+      });
+
+      // Table Column Sorting
+      DOM.tableHeaders.forEach(th => {
+        th.addEventListener('click', () => {
+          const col = th.dataset.sort;
+          if (state.tableSortCol === col) {
+            state.tableSortAsc = !state.tableSortAsc;
+          } else {
+            state.tableSortCol = col;
+            state.tableSortAsc = true;
+          }
+
+          // Update header icons
+          DOM.tableHeaders.forEach(h => {
+            const icon = h.querySelector('.sort-icon');
+            if (h === th) {
+              icon.textContent = state.tableSortAsc ? '▲' : '▼';
+            } else {
+              icon.textContent = '';
+            }
+          });
+
+          renderProbabilityTable();
+        });
+      });
+
+      // Heatmap View Toggles
+      DOM.btnViewProb.addEventListener('click', () => {
+        state.heatmapView = 'prob';
+        DOM.btnViewProb.classList.add('active');
+        DOM.btnViewSurprise.classList.remove('active');
+        renderHeatmap();
+      });
+
+      DOM.btnViewSurprise.addEventListener('click', () => {
+        state.heatmapView = 'surprise';
+        DOM.btnViewSurprise.classList.add('active');
+        DOM.btnViewProb.classList.remove('active');
+        renderHeatmap();
+      });
+
+      // Next Predictions K Dropdown & Search
+      DOM.predictionsKSelect.addEventListener('change', renderNextPredictions);
+      DOM.predictionsSearchInput.addEventListener('input', (e) => {
+        state.predictionsFilter = e.target.value;
+        renderNextPredictions();
+      });
+
+      // Generation Parameter Sliders
+      DOM.inputMaxTokens.addEventListener('input', (e) => {
+        DOM.valMaxTokens.textContent = e.target.value;
+      });
+      DOM.inputTemperature.addEventListener('input', (e) => {
+        DOM.valTemperature.textContent = parseFloat(e.target.value).toFixed(2);
+      });
+      DOM.inputTopK.addEventListener('input', (e) => {
+        DOM.valTopK.textContent = e.target.value;
+      });
+      DOM.inputTopP.addEventListener('input', (e) => {
+        DOM.valTopP.textContent = parseFloat(e.target.value).toFixed(2);
+      });
+      DOM.inputRepPenalty.addEventListener('input', (e) => {
+        DOM.valRepPenalty.textContent = parseFloat(e.target.value).toFixed(2);
+      });
+
+      // Generation Action Buttons
+      DOM.btnStartGeneration.addEventListener('click', startAutoregressiveGeneration);
+      DOM.btnStopGeneration.addEventListener('click', () => {
+        state.abortGeneration = true;
+        DOM.btnStopGeneration.disabled = true;
+      });
+
+      DOM.btnUseGenerated.addEventListener('click', () => {
+        const original = DOM.genOriginalText.textContent;
+        const cont = DOM.genStreamText.textContent;
+        DOM.sentenceInput.value = original + cont;
+        updateInputCounters();
+        runAnalysis();
+      });
+
+      // Sandbox Action Buttons & Presets
+      DOM.btnSandboxAddToken.addEventListener('click', () => {
+        const count = state.sandboxTokens.length + 1;
+        state.sandboxTokens.push({ name: `Token ${count}`, prob: 0.5 });
+        renderSandbox();
+      });
+
+      DOM.btnSandboxClearAll.addEventListener('click', () => {
+        state.sandboxTokens = [];
+        renderSandbox();
+      });
+
+      DOM.btnSandboxReset.addEventListener('click', () => {
+        state.sandboxTokens = [
+          { name: 'I', prob: 0.85 },
+          { name: 'love', prob: 0.85 },
+          { name: 'Python', prob: 0.85 }
+        ];
+        renderSandbox();
+      });
+
+      DOM.sandboxPresetButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const p = btn.dataset.preset;
+          if (p === 'confident') {
+            state.sandboxTokens = [
+              { name: 'The', prob: 0.90 },
+              { name: 'capital', prob: 0.85 },
+              { name: 'is', prob: 0.92 },
+              { name: 'Paris', prob: 0.88 }
+            ];
+          } else if (p === 'uncertain') {
+            state.sandboxTokens = [
+              { name: 'Coin', prob: 0.50 },
+              { name: 'flip', prob: 0.50 },
+              { name: 'result', prob: 0.50 }
+            ];
+          } else if (p === 'flat') {
+            state.sandboxTokens = [
+              { name: 'Random', prob: 0.10 },
+              { name: 'branching', prob: 0.10 },
+              { name: 'choices', prob: 0.10 }
+            ];
+          } else if (p === 'spike') {
+            state.sandboxTokens = [
+              { name: 'I', prob: 0.90 },
+              { name: 'love', prob: 0.90 },
+              { name: 'XZQWP', prob: 0.001 }
+            ];
+          }
+          renderSandbox();
+        });
+      });
+
+      // Modals
+      DOM.btnOpenInfo.addEventListener('click', () => {
+        DOM.modalInfo.classList.add('open');
+      });
+      DOM.btnCloseInfo.addEventListener('click', () => {
+        DOM.modalInfo.classList.remove('open');
+      });
+      DOM.btnModalInfoOk.addEventListener('click', () => {
+        DOM.modalInfo.classList.remove('open');
+      });
+
+      DOM.btnOpenSettings.addEventListener('click', () => {
+        DOM.modalSettings.classList.add('open');
+      });
+      DOM.btnCloseSettings.addEventListener('click', () => {
+        DOM.modalSettings.classList.remove('open');
+      });
+      DOM.btnModalSettingsSave.addEventListener('click', () => {
+        const newModel = DOM.settingModelSelect.value;
+        if (newModel !== state.modelId) {
+          state.modelId = newModel;
+          state.model = null;
+          state.tokenizer = null;
+          state.isModelReady = false;
+          DOM.sideModelName.textContent = newModel;
+          setModelStatus('Model switched (click Analyze to load)', 'idle');
+        }
+        DOM.modalSettings.classList.remove('open');
+      });
+
+      // Cache clear
+      DOM.btnClearCache.addEventListener('click', async () => {
+        try {
+          if ('caches' in window) {
+            const keys = await caches.keys();
+            for (const key of keys) {
+              await caches.delete(key);
+            }
+          }
+          DOM.cacheClearedMsg.style.display = 'inline';
+          setTimeout(() => {
+            DOM.cacheClearedMsg.style.display = 'none';
+          }, 3000);
+        } catch (e) {
+          alert('Could not clear cache: ' + e.message);
+        }
+      });
+
+      // Theme toggle
+      const themes = ['default', 'cosmic', 'contrast'];
+      let currentThemeIdx = 0;
+      DOM.btnThemeToggle.addEventListener('click', () => {
+        currentThemeIdx = (currentThemeIdx + 1) % themes.length;
+        const theme = themes[currentThemeIdx];
+        if (theme === 'default') {
+          document.documentElement.removeAttribute('data-theme');
+        } else {
+          document.documentElement.setAttribute('data-theme', theme);
+        }
+      });
+
+      DOM.settingThemeSelect.addEventListener('change', (e) => {
+        const theme = e.target.value;
+        if (theme === 'default') {
+          document.documentElement.removeAttribute('data-theme');
+        } else {
+          document.documentElement.setAttribute('data-theme', theme);
+        }
+      });
+    }
+
+    /* --------------------------------------------------------------------------
+       INITIALIZATION
+       -------------------------------------------------------------------------- */
+    function init() {
+      initEventListeners();
+      updateInputCounters();
+      renderSandbox();
+    }
+
+    // Run when DOM is ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+  </script>
+</body>
+</html>
